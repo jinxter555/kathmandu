@@ -1,5 +1,6 @@
 const graphql = require('graphql');
 const TodoProgram = require('../todo_src/TodoProgram');
+const TodoProject = require('../todo_src/TodoProject');
 
 const {
   GraphQLObjectType,
@@ -11,6 +12,14 @@ const {
   GraphQLNonNull
 } = graphql;
 
+const ProjectType = new GraphQLObjectType({
+  name: 'Project',
+  fields: () => ({
+    id: {type: GraphQLID},
+    name: {type: GraphQLString},
+    description: {type: GraphQLString},
+  })
+});
 
 const ProgramType = new GraphQLObjectType({
   name: 'Program',
@@ -18,6 +27,12 @@ const ProgramType = new GraphQLObjectType({
     id: {type: GraphQLID},
     name: {type: GraphQLString},
     description: {type: GraphQLString},
+    projects: {
+      type: GraphQLList(ProgramType),
+      resolve(parent, args) {
+        return TodoProject.findByProgramId(parent._id);
+      }
+    },
   })
 });
 
@@ -28,16 +43,21 @@ const RootQuery = new GraphQLObjectType({
       type: ProgramType,
       args: {id: {type: GraphQLID}},
       resolve(parent, args) {
-        return TodoProgram.WorkProgramById(args.id)
+        return TodoProgram.findById(args.id)
       }
     },
     programs: {
       type: new GraphQLList(ProgramType),
       resolve(parent, args) {
         // return list of programs;
-        return TodoProgram.WorkPrograms();
+        return TodoProgram.findAll();
       }
     },
+    projects: {
+      type: new GraphQLList(ProjectType),
+      resolve(parent, args) {
+      }
+    }
   }
 });
 
@@ -55,7 +75,7 @@ const Mutation =  new GraphQLObjectType({
           name: args.name,
           description: args.description
         }
-        return TodoProgram.WorkProgram(program_args)
+        return TodoProgram.createOrUpdate(program_args)
       }
     },
     delProgram: {
@@ -64,7 +84,7 @@ const Mutation =  new GraphQLObjectType({
         id: {type: GraphQLID}
       },
       resolve(parent, args) {
-        return TodoProgram.WorkProgramDeleteById(args.id);
+        return TodoProgram.deleteById(args.id);
       }
     }
   }

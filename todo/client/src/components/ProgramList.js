@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
+import {connect} from 'react-redux'
 import {getProgramsQuery, delProgramMutation} from '../queries/queries';
 import ProgramDetails from './ProgramDetails';
 import { ListGroup, ListGroupItem, Button } from 'reactstrap';
+import {selectProgram} from '../actions/programActions'
+
 const uuidv1 = require('uuid/v1')
 
 class ProgramList extends Component {
@@ -25,7 +28,6 @@ class ProgramList extends Component {
   displayPrograms() {
     // let data = this.props.data;
     let data = this.props.getProgramsQuery;
-    //console.log(this.props)
     if(data.loading){
       return(<div>Loading Programs</div>)
     } else {
@@ -34,10 +36,11 @@ class ProgramList extends Component {
           <ListGroup key={uuidv1()}>
             <ListGroupItem key={program.id} >
               <div>
-                <span onClick = {(e) => {
+                <span  onClick = {(e) => {
                   this.setState({
                     selected: program.id
                   })
+                  this.props.selectProgram(program.id)
                  }}> {program.name} </span>
                 <Button className="pull-right" color="danger" 
                   onClick ={this.onClickDelete.bind(this, program.id)} >
@@ -66,9 +69,25 @@ class ProgramList extends Component {
     );
   }
 }
-// export default graphql(getProgramsQuery)(ProgramList);
 
+const mapStateToProps = (state, ownProps) => {
+  return {
+    programId: state.programId,
+  }
+}
+
+// store.dispatch({action payload)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    selectProgram: (programId) => {
+      dispatch(selectProgram(programId))
+    }
+  }
+}
+
+// export default graphql(getProgramsQuery)(ProgramList);
 export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
   graphql(delProgramMutation, {name: "delProgramMutation"}),
-  graphql(getProgramsQuery, {name: "getProgramsQuery"})
+  graphql(getProgramsQuery, {name: "getProgramsQuery"}),
 )(ProgramList);

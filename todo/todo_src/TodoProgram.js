@@ -13,18 +13,23 @@ class TodoProgram {
         return program;
       });
   }
-  static async WorkProgram(program_args) {
+  static async createOrUpdate(program_args) {
     return await WorkProgram.WorkProgram(program_args);
   }
-  static async WorkProgramById(id) {
+  static async findById(id) {
     return await WorkProgram.findById(id, function(err, program) {
       return program;
     });
   }
-  static async WorkProgramDeleteById(id) {
+  static async findByName(name) {
+    return await WorkProgram.findOne({name: name}, function(err, program) {
+      return program;
+    });
+  }
+  static async deleteById(id) {
     return await WorkProgram.findByIdAndDelete(id);
   }
-  static WorkPrograms() {
+  static findAll() {
     return WorkProgram.find();
   }
 }

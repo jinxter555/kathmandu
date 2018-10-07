@@ -1,6 +1,6 @@
 
 const TodoProgram = require('../todo_src/TodoProgram');
-const WorkTask = require('../models/WorkTask');
+const WorkProgram = require('../models/WorkProgram');
 const MongoDB = require('../openMongo');
 const faker = require('faker');
 
@@ -17,7 +17,11 @@ var task1, task2, task1_found, task2_found, task3, task3_found,
 describe('Todo class test',  () => {
 
   beforeAll(async () => {
-    MongoDB.open('dev');
+    MongoDB.open('test');
+    WorkProgram.remove({}, function(err) {
+      console.log('collection removed')
+    });
+
   });
 
   afterAll(async () => {
@@ -28,15 +32,19 @@ describe('Todo class test',  () => {
   //-------------------------  Test suites here
   test('able to use Todo class to create new program object', async () => {
     jest.setTimeout(1000);
-    work_program = await TodoProgram.WorkProgram(program_args);
+    work_program = await TodoProgram.createOrUpdate(program_args);
     expect(work_program.name).toMatch(program_args.name)
   })
 
   test('able to use Todo class method findById to look for newly created object', async () => {
     jest.setTimeout(1000);
-    work_program = await TodoProgram.WorkProgram(program_args);
-    work_program_found = await TodoProgram.WorkProgramById(work_program.id)
+    work_program = await TodoProgram.createOrUpdate(program_args);
+
+    work_program_found = await TodoProgram.findById(work_program.id)
+    work_program_found_by_name = await TodoProgram.findByName(work_program.name)
+
     expect(work_program_found.name).toMatch(program_args.name)
+    expect(work_program_found_by_name.name).toMatch(program_args.name)
     console.log(work_program_found);
   })
 });

@@ -14,6 +14,9 @@ const getProgramQuery = gql`
       id
       name
       description
+      projects {
+        name
+      }
     }
   }
 `;

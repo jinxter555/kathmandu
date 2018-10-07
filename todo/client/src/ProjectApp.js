@@ -3,8 +3,8 @@ import ApolloClient from 'apollo-boost';
 import { ApolloProvider} from 'react-apollo';
 
 // compoents
-import ProgramList from './components/ProgramList';
-import AddProgram from './components/AddProgram';
+import ProjectList from './components/ProjectList';
+//import AddProect from './components/AddProject';
 
 // reduce
 import {Provider} from 'react-redux';
@@ -21,15 +21,14 @@ const client = new ApolloClient({
 
 //
 
-export default class App extends Component {
+export default class ProjectApp extends Component {
   render() {
     return (
       <ApolloProvider client={client}>
         <Provider store={store} >
           <div id="main" className="col-sm-4">>
-            <h1>Program listing</h1>
-            <ProgramList />
-            <AddProgram />
+            <h1>Project listing</h1>
+            <ProjectList />
           </div>
         </Provider>
       </ApolloProvider>
