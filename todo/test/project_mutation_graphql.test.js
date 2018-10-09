@@ -12,25 +12,35 @@ const WorkTask = require('../models/WorkTask');
 
 
 var task1, task2, task1_found, task2_found, task3, task3_found,
-  program_args = { name: 'my program 1', description: faker.lorem.sentence()},
+  program1_args = { name: 'my program 1', description: faker.lorem.sentence()},
   program2_args = { name: 'my program 2', description: faker.lorem.sentence()},
-  project_args = { name: 'my project 1', description: faker.lorem.sentence()},
+  project1_args = { name: 'my project 1', description: faker.lorem.sentence()},
   project2_args = { name: 'my project 2', description: faker.lorem.sentence()},
   work_process_args = { name: 'my work process 1', description: faker.lorem.sentence()},
   task1_args = { description: 'my task 1: wash your hands' },
   task2_args = { description: 'my task 2: wash your feet' },
   task3_args = { description: 'my task 3: take a shower' };
 
-var work_program;
+var work_program1;
+var work_program2;
 
 describe('Integration', () => {
   let app;
 
   beforeAll(async (done) => {
     // jest.setTimeout(1000);
-    MongoDB.open('test');
+    MongoDB.open('dev');
     app = integrationServer.start(done);
-    work_program = await TodoProgram.createOrUpdate(program_args);
+
+    /*
+    WorkProject.remove({}, function(err) {
+      console.log('project collection removed')
+    });
+
+    WorkProgram.remove({}, function(err) {
+      console.log('projgram collection removed')
+    });
+    */
   });
 
   afterAll(async(done) => {
@@ -38,35 +48,44 @@ describe('Integration', () => {
 
     integrationServer.stop(app, done);
     MongoDB.close();
-      // p = await WorkPrograoWorkTask.find({null: null});
+      //p = await WorkTask.find({null: null});
   });
 
-  test('mutation add program ', () => {
+  test('mutation add project ', async () => {
+    work_program1 = await TodoProgram.createOrUpdate(program1_args);
+    work_program2 = await TodoProgram.createOrUpdate(program2_args);
+
     var query = `
     mutation {
-      addProgram(name: "${program2_args.name}", description: "${program2_args.description}") {
-        id
-        name
-        description
-      }
+      addProjectByProgramId(
+        id: "${work_program1._id}",
+        name: "${project1_args.name}",
+        description: "${project1_args.description}") {
+          id
+          name
+          description
+        }
     }`;
 
+    console.log(query);
     return integrationServer
       .graphqlQuery(app, query)
       .then((response) => {
         expect(response.statusCode).toEqual(200);
-        expect(response.body.addProgram.name).toEqual(program2_args.name);
+        console.log(response.body);
+        //expect(response.body.addProjectByProgramId.name).toEqual(project1_args.name);
       });
   });
 
-  test('mutation del program ', async () => {
-    work_program = await TodoProgram.createOrUpdate(program_args);
+  xtest('mutation del program ', async () => {
+    work_program1 = await TodoProgram.WorkProgram(program_args);
     var query = `
     mutation {
       delProgram(id: "${work_program._id}") {
         id
         name
         description
+        workProgram
       }
     }`;
 

@@ -10,7 +10,7 @@ class ProgramDetails extends Component {
       selected: null
     }
   }
-  displayPrograms() {
+  displayProgram() {
     let data = this.props.data;
     if(data.loading){
       return(<div>Loading this Program</div>)
@@ -24,7 +24,7 @@ class ProgramDetails extends Component {
   render() {
     return(
       <div>
-        {this.displayPrograms()}
+        {this.displayProgram()}
       </div>
     );
   }

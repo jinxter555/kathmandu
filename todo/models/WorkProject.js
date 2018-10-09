@@ -43,6 +43,17 @@ WorkProjectSchema.statics.WorkProject = async function(args, program_args) {
   return workProject;
 }
 
+WorkProjectSchema.statics.createOrUpdateByProgramId = async function(programId, args) {
+  workProgram = await WorkProgram.findById(programId)
+  args.workProgram = workProgram
+  workProject = await WorkProject.findOneAndUpdate({name: args.name, workProgram: workProgram}, args, {
+    upsert: true,
+    new: true,
+    overwrite: true, function(err, model) { }
+  })
+  return workProject;
+}
+
 WorkProjectSchema.methods.selfInspect = function() {
   console.log("--- self inspect---");
   console.log("project: " + util.inspect(this, null, 4))

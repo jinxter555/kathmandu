@@ -26,6 +26,11 @@ class TodoProject {
       return projects;
     });
   }
+
+  static async createOrUpdateByProgramId(programId, project_args) {
+    return await WorkProject.createOrUpdateByProgramId(programId, project_args);
+  }
+
   static async deleteById(id) {
     return await WorkProject.findByIdAndDelete(id);
   }

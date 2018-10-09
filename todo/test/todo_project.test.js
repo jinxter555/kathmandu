@@ -10,8 +10,10 @@ const faker = require('faker');
 var task1, task2, task1_found, task2_found, task3, task3_found,
   program1_args = { name: 'my program 1', description: faker.lorem.sentence()},
   program2_args = { name: 'my program 2', description: faker.lorem.sentence()},
+  program3_args = { name: 'my program 3', description: faker.lorem.sentence()},
   project1_args = { name: 'my project 1', description: faker.lorem.sentence()},
   project2_args = { name: 'my project 2', description: faker.lorem.sentence()},
+  project3_args = { name: 'my project 3', description: faker.lorem.sentence()},
   work_process_args = { name: 'my work process 1', description: faker.lorem.sentence()},
   task1_args = { description: 'my task 1: wash your hands' },
   task2_args = { description: 'my task 2: wash your feet' },
@@ -59,5 +61,11 @@ describe('Todo class test',  () => {
     expect(work_projects_1st_batch.length).toEqual(2);
     expect(work_projects_2nd_batch.length).toEqual(2);
 
+  })
+
+  test('create project from programId', async () => {
+    work_program3 = await TodoProgram.createOrUpdate(program3_args);
+    work_project3 = await TodoProject.createOrUpdateByProgramId(work_program3._id, project3_args);
+    expect(work_project3.name).toMatch(project3_args.name)
   })
 });

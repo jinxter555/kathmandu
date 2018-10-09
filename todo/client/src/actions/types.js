@@ -1,2 +1,4 @@
 export const SELECT_PROGRAM = 'SELECT_PROGRAM';
 export const SELECT_PROJECT = 'SELECT_PROJECT';
+export const SELECT_PROCESS = 'SELECT_PROCESS';
+export const SELECT_TASK = 'SELECT_TASK';

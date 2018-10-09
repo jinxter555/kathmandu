@@ -1,5 +1,6 @@
 
 import { SELECT_PROGRAM } from '../actions/types';
+import { SELECT_PROJECT } from '../actions/types';
 
 const initState = {
   programId: null,
@@ -9,10 +10,15 @@ const initState = {
 }
 const rootReducer = (state = initState, action) => {
   switch(action.type) {
-    case SELECT_PROGRAM: 
+    case SELECT_PROGRAM:
       return {
         ...state,
         programId: action.programId
+      }
+    case SELECT_PROJECT:
+      return {
+        ...state,
+        projectId: action.projectId
       }
     default: return state;
   }
