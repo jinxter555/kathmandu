@@ -43,7 +43,6 @@ const RootQuery = new GraphQLObjectType({
       type: ProgramType,
       args: {id: {type: GraphQLID}},
       resolve(parent, args) {
-        console.log("program loading")
         return TodoProgram.findById(args.id)
       }
     },
@@ -96,7 +95,6 @@ const Mutation =  new GraphQLObjectType({
         description: {type: GraphQLString}
       },
       resolve(parent, args) {
-        console.log("in addProjectBy.. resolver--");
         program_args = {
           name: args.name,
           description: args.description

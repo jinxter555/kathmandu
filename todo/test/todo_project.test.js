@@ -19,19 +19,23 @@ var task1, task2, task1_found, task2_found, task3, task3_found,
   task2_args = { description: 'my task 2: wash your feet' },
   task3_args = { description: 'my task 3: take a shower' };
 
+
+
 describe('Todo class test',  () => {
 
   beforeAll(async () => {
-    MongoDB.open('dev');
+    MongoDB.open('test');
     WorkProject.remove({}, function(err) {
-      console.log('collection removed')
+      //console.log('collection removed')
     });
+
     WorkProgram.remove({}, function(err) {
-      console.log('collection removed')
+      //console.log('collection removed')
     });
   });
 
   afterAll(async () => {
+
     MongoDB.close();
     p = await WorkTask.find({null: null});
   });
@@ -63,9 +67,23 @@ describe('Todo class test',  () => {
 
   })
 
-  test('create project from programId', async () => {
+  test('create project from programId and delete Program causing throw error to be catched', async () => {
     work_program3 = await TodoProgram.createOrUpdate(program3_args);
     work_project3 = await TodoProject.createOrUpdateByProgramId(work_program3._id, project3_args);
     expect(work_project3.name).toMatch(project3_args.name)
+
+    // work_program3.remove();
+    try  {
+      work_program3 = await TodoProgram.deleteById(work_program3._id)
+    } catch(e) {
+      console.log('catching error:' + e.name + ": " + e.message);
+    }
+
+    /*
+    expect(() =>  {
+      work_program3 = TodoProgram.deleteById(work_program3._id)
+    }).toThrowError(/WorkProgram/);
+    */
+
   })
 });

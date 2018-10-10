@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+// const WorkProject= require('./WorkProject');
 const OPStatus = require('../op_status');
 const util = require('util');
 const Schema = mongoose.Schema;
@@ -28,6 +29,25 @@ WorkProgramSchema.statics.WorkProgram = async function(args) {
   })
   return workProgram;
 }
+
+/*WorkProgramSchema.pre('remove', function(next) {
+  console.log("WorkProgramSchema: in pre-remove")
+  console.log(this.model(WorkProject));
+  // this.model('WorkProjects').remove({ workProgram: this._id }, next);
+});
+*/
+
+/*
+WorkProgramSchema.pre('findOneAndRemove', function(next) {
+  console.log("WorkProgramSchema: in pre-findOneAndRemove")
+  this.model('WorkProjects').find({ workProgram: this._id }, function(projects, err) {
+    console.log("projects")
+    console.dir(projects)
+  });
+  next();
+});
+*/
+
 
 WorkProgramSchema.methods.markActivated = function() {
   this.opStatus =  OPStatus.activated;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 import {connect} from 'react-redux'
 import {getProgramQuery } from '../queries/queries';
-import { ListGroup, ListGroupItem } from 'reactstrap';
+import { ListGroup, ListGroupItem, Button } from 'reactstrap';
 import {selectProject} from '../actions/projectActions'
 
 const uuidv1 = require('uuid/v1')
@@ -21,6 +21,10 @@ class ProjectList extends Component {
     })
   }
 
+  deleteProject(projectId) {
+    console.log(projectId)
+  }
+
   displayProjects() {
     let data = this.props.getProgramQuery;
     if(data.loading){
@@ -32,6 +36,7 @@ class ProjectList extends Component {
             <ListGroupItem key={project.id} >
               <ProjectItem project={project} 
                 selectProject={this.props.selectProject} 
+                deleteProject={this.deleteProject}
                 />
             </ListGroupItem>
           </ListGroup>
@@ -66,19 +71,30 @@ class ProjectItem extends Component {
     super(props);
   }
   */
+  onClickDelete(id) {
+    this.props.deleteProject(id)
+  }
   render() {
     let project = this.props.project;
     let selectProject = this.props.selectProject;
+
     return(
       <div>
         <span  onClick = {(e) => {
           selectProject(project.id);
          }}> {project.name} {project.id} </span>
+        <Button 
+          className="pull-right" 
+          color="danger"
+          onClick={this.onClickDelete.bind(this, project.id)} 
+        >
+          <span className="glyphicon glyphicon-remove"></span> 
+          {' '}Delete
+        </Button>
       </div>
     );
   }
 }
-
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -86,16 +102,13 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-// store.dispatch({action payload)
 const mapDispatchToProps = (dispatch) => {
   return {
     selectProject: (projectId) => {
-      console.log(projectId)
       dispatch(selectProject(projectId))
     }
   }
 }
-
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),

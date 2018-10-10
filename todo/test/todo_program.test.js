@@ -36,7 +36,7 @@ describe('Todo class test',  () => {
     expect(work_program.name).toMatch(program_args.name)
   })
 
-  test('able to use Todo class method findById to look for newly created object', async () => {
+  test('able to use Todo class method findById to look for newly created object and delete the object', async () => {
     jest.setTimeout(1000);
     work_program = await TodoProgram.createOrUpdate(program_args);
 
@@ -46,5 +46,13 @@ describe('Todo class test',  () => {
     expect(work_program_found.name).toMatch(program_args.name)
     expect(work_program_found_by_name.name).toMatch(program_args.name)
     console.log(work_program_found);
+
+    // delete work program and look it up and make sure it's null.
+    work_program_deleted = await TodoProgram.deleteById(work_program.id)
+    console.log(work_program_deleted);
+
+    work_program_not_found = await TodoProgram.deleteById(work_program_deleted.id)
+    expect(work_program_not_found).toBeNull();
+
   })
 });

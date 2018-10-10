@@ -63,7 +63,7 @@ describe('work program',  () => {
 
   });
 
-  xtest('Able to create a new program using Program function', async() => {
+  test('Able to create a new program using Program function', async() => {
     jest.setTimeout(500);
 
     name = faker.lorem.sentence();
