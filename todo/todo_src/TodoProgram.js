@@ -1,10 +1,5 @@
 const WorkProgram = require('../models/WorkProgram');
-const WorkProject= require('../models/WorkProject');
-const TodoProject= require('./TodoProject');
-const WorkProcess = require('../models/WorkProcess');
-const WorkTask = require('../models/WorkTask');
-const MongoDB = require('../openMongo');
-const util = require('util');
+// const TodoProject = require('./TodoProject'); // at bottom of file because of circular require
 
 class TodoProgram {
   constructor(program_args) {
@@ -26,12 +21,17 @@ class TodoProgram {
       return program;
     });
   }
+  static async findByArgs(args) {
+    return await WorkProgram.findOne({name: args.name}, function(err, program) {
+      return program;
+    });
+  }
   static async deleteById(id) {
     let projects = await TodoProject.findByProgramId(id)
     if(projects.length !== 0)  {
-      let work_program = await TodoProgram.findById(id)
+      let program = await TodoProgram.findById(id)
       console.error("Can't delete WorkProgram: (" 
-        + work_program.name + 
+        + program.name + 
         ') because it still has the following project(s)')
       projects.forEach(function(project) {
         console.error(project.name);
@@ -47,3 +47,4 @@ class TodoProgram {
 }
 
 module.exports = TodoProgram;
+const TodoProject = require('./TodoProject');

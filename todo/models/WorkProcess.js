@@ -23,12 +23,8 @@ const WorkProcessSchema = new Schema({
 
 WorkProcessSchema.index({name: 1, workProject: 1}, {unique: true});
 
-
-WorkProcessSchema.methods.markActivated = function() {
-  this.status =  OPStatus.activated;
-}
-
-WorkProcessSchema.statics.WorkProcess = async function(args, project_args, program_args) {
+WorkProcessSchema.statics.WorkProcess = async function(process_args, project_args, program_args) {
+  args = Object.create(process_args) // prevent this function from modifying process_args
   project = await WorkProject.WorkProject(project_args, program_args).catch(e => {console.log(e)});
   args.workProject = project
 
@@ -41,11 +37,6 @@ WorkProcessSchema.statics.WorkProcess = async function(args, project_args, progr
   });
 
   return workProcess;
-}
-
-
-WorkProcessSchema.methods.markCompleted = function() {
-  this.status =  OPStatus.completed;
 }
 
 WorkProcessSchema.methods.selfInspect = function() {
