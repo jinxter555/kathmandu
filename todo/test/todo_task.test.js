@@ -1,4 +1,4 @@
-
+const TodoTask = require('../todo_src/TodoTask');
 const TodoProcess = require('../todo_src/TodoProcess');
 const TodoProject = require('../todo_src/TodoProject');
 const TodoProgram = require('../todo_src/TodoProgram');
@@ -18,14 +18,15 @@ var task1, task2, task1_found, task2_found, task3, task3_found,
   project2_args = { name: 'my project 2', description: faker.lorem.sentence()},
   project3_args = { name: 'my project 3', description: faker.lorem.sentence()},
 
-  process1_args = { name: 'my process 1', description: faker.lorem.sentence()},
+  // process1_args = { name: 'my process 1', description: faker.lorem.sentence()},
+  process1_args = { name: 'my process 1', description: "process 1 description" },
   process2_args = { name: 'my process 2', description: faker.lorem.sentence()},
   process3_args = { name: 'my process 3', description: faker.lorem.sentence()},
 
-  work_process_args = { name: 'my work process 1', description: faker.lorem.sentence()},
   task1_args = { description: 'my task 1: wash your hands' },
-  task2_args = { description: 'my task 2: wash your feet' },
+  task2_args = { description: 'my task 2: brush your teeth' },
   task3_args = { description: 'my task 3: take a shower' };
+  task4_args = { description: 'my task 3: make coffee' };
 
 
 
@@ -33,6 +34,10 @@ describe('Todo process class test',  () => {
 
   beforeAll(async () => {
     MongoDB.open('test');
+
+    WorkTask.remove({}, function(err) {
+      //console.log('collection removed')
+    });
 
     WorkProcess.remove({}, function(err) {
       //console.log('collection removed')
@@ -48,18 +53,39 @@ describe('Todo process class test',  () => {
   });
 
   afterAll(async () => {
-
     MongoDB.close();
-    p = await WorkProcess.find({null: null});
+    p = await WorkTask.find({null: null});
   });
 
   //-------------------------  Test suites here
-  test('able to use Todo class to create new process object', async () => {
+  test('able to use TodoTask class to create new task object', async () => {
     jest.setTimeout(1000);
-    work_process1 = await TodoProcess.createOrUpdate(process1_args, project1_args, program1_args);
-    expect(work_process1.name).toMatch(process1_args.name)
-    //console.dir(work_process1);
+    work_task1 = await TodoTask.createOrUpdate(task1_args, process1_args, project1_args, program1_args);
+    work_task1_found_by_id = await TodoTask.findById(work_task1._id);
+
+    console.log(work_task1_found_by_id.constructor.name);
+
+    expect(work_task1_found_by_id.name).toEqual(work_task1.name);
+
+    work_task1_found_by_args = await TodoTask.findByArgs(task1_args, process1_args, project1_args, program1_args);
+
+    //console.log(work_task1_found_by_args);
+    expect(work_task1_found_by_args.name).toEqual(work_task1.name);
   })
+
+  test('able to use TodoTask class to create new task object by using processId', async () => {
+    work_task1 = await TodoTask.createOrUpdate(task1_args, process1_args, project1_args, program1_args);
+    work_process1 = await TodoProcess.findByArgs(process1_args, project1_args, program1_args);
+    work_task2 = await TodoTask.createOrUpdateByProcessId(work_process1._id, task2_args);
+
+    //tasks = await work_process1.findChildrenTasks();
+
+    console.log(work_task1.constructor.name);
+    console.log(work_task2.constructor.name);
+    console.log(work_process1.constructor.name);
+
+  })
+
 
   xtest('list projects created under a program', async () => {
     jest.setTimeout(1000);
@@ -97,7 +123,7 @@ describe('Todo process class test',  () => {
     expect(work_process2_p2._id).toEqual(w_p_p2._id);
   })
 
-  test('create project from programId and delete Program causing throw error to be catched', async () => {
+  xtest('create project from programId and delete Program causing throw error to be catched', async () => {
     work_process1_p1 = await TodoProcess.createOrUpdate(process1_args, project1_args, program3_args);
     work_program3 = await TodoProgram.findByArgs(program3_args);
     work_project1 = await TodoProject.findByArgs(project1_args, program3_args);

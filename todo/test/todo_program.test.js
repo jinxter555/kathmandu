@@ -6,7 +6,7 @@ const faker = require('faker');
 
 
 var task1, task2, task1_found, task2_found, task3, task3_found,
-  program_args = { name: 'my program 1', description: faker.lorem.sentence()},
+  program_args = { name: 'my program 1abc', description: faker.lorem.sentence()},
   project_args = { name: 'my project 1', description: faker.lorem.sentence()},
   project2_args = { name: 'my project 2', description: faker.lorem.sentence()},
   work_process_args = { name: 'my work process 1', description: faker.lorem.sentence()},
@@ -32,7 +32,8 @@ describe('Todo class test',  () => {
   test('able to use Todo class to create new program object', async () => {
     jest.setTimeout(2000);
     work_program = await TodoProgram.createOrUpdate(program_args);
-    expect(work_program.name).toMatch(program_args.name)
+    work_program_found = await TodoProgram.findByArgs(program_args);
+    expect(work_program).toEqual(work_program_found);
   })
 
   test('able to use Todo class method findById to look for newly created object and delete the object', async () => {
@@ -52,6 +53,8 @@ describe('Todo class test',  () => {
 
     work_program_not_found = await TodoProgram.deleteById(work_program_deleted.id)
     expect(work_program_not_found).toBeNull();
+
+    // work_program.hello();
 
   })
 });

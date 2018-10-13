@@ -4,10 +4,33 @@ const MongoDB = require('../openMongo');
 const OPStatus = require('../op_status');
 const faker = require('faker');
 
+
+
+var task1, task2, task1_found, task2_found, task3, task3_found,
+  program1_args = { name: 'my program 1', description: faker.lorem.sentence()},
+  program2_args = { name: 'my program 2', description: faker.lorem.sentence()},
+  program3_args = { name: 'my program 3', description: faker.lorem.sentence()},
+
+  project1_args = { name: 'my project 1', description: faker.lorem.sentence()},
+  project2_args = { name: 'my project 2', description: faker.lorem.sentence()},
+  project3_args = { name: 'my project 3', description: faker.lorem.sentence()},
+
+  // process1_args = { name: 'my process 1', description: faker.lorem.sentence()},
+  process1_args = { name: 'my process 1', description: "process 1 description" },
+  process2_args = { name: 'my process 2', description: faker.lorem.sentence()},
+  process3_args = { name: 'my process 3', description: faker.lorem.sentence()},
+
+  task1_args = { description: 'my task 1: wash your hands' },
+  task2_args = { description: 'my task 2: brush your teeth' },
+  task3_args = { description: 'my task 3: take a shower' },
+  task4_args = { description: 'my task 3: make coffee' };
+
+
+
 describe('work program',  () => {
 
   beforeAll(() => {
-    MongoDB.open('dev');
+    MongoDB.open('test');
   });
 
   afterAll(async () => {

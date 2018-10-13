@@ -24,25 +24,24 @@ WorkTaskSchema.index({description: 1, workProcess: 1}, {unique: true});
  * creates a new task based on Arguments
  *  if work_process_args is an object of WorkProcess then use it directly
  */
-WorkTaskSchema.statics.WorkTask = async function(args, work_process_args, project_args, program_args) {
-  //if(typeof work_process_args == 'object' &&
-  if(work_process_args.constructor.modelName == 'WorkProcesses') {
-    workProcess = work_process_args;
-  }  else {
-    workProcess = await WorkProcess.WorkProcess(work_process_args, project_args, program_args)
-  }
+WorkTaskSchema.statics.WorkTask = async function(task_args, process_args, project_args, program_args) {
+  // this has to be first because of promise
+  workProcess = await WorkProcess.WorkProcess(process_args, project_args, program_args).catch(e => {console.log(e)});  // this has to be first because of promise
+  // after work process promise
+  args = Object.create(task_args); // prevent this function from modifying process_args
   args.workProcess = workProcess
 
-  task = await WorkTask.findOneAndUpdate({
-    description: args.description,
-    workProcess: workProcess}, args, {
+  task  = await WorkTask.findOneAndUpdate({description: args.description, workProcess: args.workProcess}, args, {
     upsert: true,
     new: true,
     overwrite: true, function(err, model) { }
-  })
+  }).catch((err)  => {
+    console.log(err)
+  });
 
   return task;
 }
+
 WorkTaskSchema.methods.addNextTask = async function(args) {
   args.workProcess = this.workProcess
 

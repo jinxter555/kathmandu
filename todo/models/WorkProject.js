@@ -23,11 +23,11 @@ const WorkProjectSchema = new Schema({
 WorkProjectSchema.index({name: 1, workProgram: 1}, {unique: true});
 
 WorkProjectSchema.statics.WorkProject = async function(project_args, program_args) {
-  var args = Object.create( project_args ); // prevent this function from modifying projects_args
   workProgram = await WorkProgram.WorkProgram(program_args)
-  args.workProgram = workProgram
+  args = Object.create( project_args ); // prevent this function from modifying projects_args
+  args.workProgram = workProgram;
 
-  workProject = await WorkProject.findOneAndUpdate({name: args.name, workProgram: workProgram}, args, {
+  workProject = await WorkProject.findOneAndUpdate({name: args.name, workProgram: args.workProgram}, args, {
     upsert: true,
     new: true,
     overwrite: true, function(err, model) { }

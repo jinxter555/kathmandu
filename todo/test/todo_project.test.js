@@ -46,6 +46,7 @@ describe('Todo class test',  () => {
     jest.setTimeout(1000);
     work_project1 = await TodoProject.createOrUpdate(project1_args, program1_args);
     expect(work_project1.name).toMatch(project1_args.name)
+    console.log(work_project1.constructor.name);
   })
 
   test('list projects created under a program', async () => {
@@ -54,6 +55,7 @@ describe('Todo class test',  () => {
     work_project2_p1 = await TodoProject.createOrUpdate(project2_args, program1_args);
 
     work_program1 = await TodoProgram.findByName(program1_args.name);
+    console.log(work_program1.constructor.name);
 
     work_project1_p2 = await TodoProject.createOrUpdate(project1_args, program2_args);
     work_project2_p2 = await TodoProject.createOrUpdate(project2_args, program2_args);

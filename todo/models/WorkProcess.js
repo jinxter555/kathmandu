@@ -24,9 +24,9 @@ const WorkProcessSchema = new Schema({
 WorkProcessSchema.index({name: 1, workProject: 1}, {unique: true});
 
 WorkProcessSchema.statics.WorkProcess = async function(process_args, project_args, program_args) {
+  workProject = await WorkProject.WorkProject(project_args, program_args).catch(e => {console.log(e)});
   args = Object.create(process_args) // prevent this function from modifying process_args
-  project = await WorkProject.WorkProject(project_args, program_args).catch(e => {console.log(e)});
-  args.workProject = project
+  args.workProject = workProject;
 
   workProcess = await WorkProcess.findOneAndUpdate({name: args.name, workProject: args.workProject}, args, {
     upsert: true,

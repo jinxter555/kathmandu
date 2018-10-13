@@ -1,33 +1,46 @@
 const WorkProgram = require('../models/WorkProgram');
-// const TodoProject = require('./TodoProject'); // at bottom of file because of circular require
+const WorkProject = require('../models/WorkProject');
 
-class TodoProgram {
-  constructor(program_args) {
-    return WorkProgram.WorkProgram(program_args)
-      .then(program => {
-        return program;
-      });
+class TodoProgram extends WorkProgram {
+  constructor(program_obj) {
+    super(program_obj); 
+    return this;
   }
   static async createOrUpdate(program_args) {
-    return await WorkProgram.WorkProgram(program_args);
+    let program = await WorkProgram.WorkProgram(program_args)
+      .then(program => {
+        return program; // added
+      });
+    return new TodoProgram(program); // added
   }
   static async findById(id) {
-    return await WorkProgram.findById(id, function(err, program) {
+    let program = await WorkProgram.findById(id, function(err, program) {
       return program;
     });
+    return new TodoProgram(program);
   }
   static async findByName(name) {
-    return await WorkProgram.findOne({name: name}, function(err, program) {
+    let program = await WorkProgram.findOne({name: name}, function(err, program) {
       return program;
+    });
+    return new TodoProgram(program);
+  }
+
+  // this should be called from outside of this TodoProgram class
+  static async findProjectsByProgramId(id) {  
+    return await WorkProject.find({workProgram: id}, function(err, projects) {
+      //return projects.map(project => new TodoProject(project));
+      return projects;
     });
   }
   static async findByArgs(args) {
-    return await WorkProgram.findOne({name: args.name}, function(err, program) {
+    let program = await WorkProgram.findOne({name: args.name}, function(err, program) {
       return program;
     });
+    return new TodoProgram(program);
   }
   static async deleteById(id) {
-    let projects = await TodoProject.findByProgramId(id)
+    let projects = await TodoProgram.findProjectsByProgramId(id)
     if(projects.length !== 0)  {
       let program = await TodoProgram.findById(id)
       console.error("Can't delete WorkProgram: (" 
@@ -47,4 +60,3 @@ class TodoProgram {
 }
 
 module.exports = TodoProgram;
-const TodoProject = require('./TodoProject');
