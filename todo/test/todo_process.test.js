@@ -32,7 +32,7 @@ var task1, task2, task1_found, task2_found, task3, task3_found,
 describe('Todo process class test',  () => {
 
   beforeAll(async () => {
-    MongoDB.open('test');
+    MongoDB.open('dev');
 
     WorkProcess.remove({}, function(err) {
       //console.log('collection removed')
@@ -61,52 +61,25 @@ describe('Todo process class test',  () => {
     //console.dir(work_process1);
   })
 
-  xtest('list projects created under a program', async () => {
+  test('list processes created under a project', async () => {
     jest.setTimeout(1000);
-    work_process1_p1 = await TodoProcess.createOrUpdate(process1_args, project1_args, program1_args);
-    work_process1_p2 = await TodoProcess.createOrUpdate(process2_args, project1_args, program1_args);
+    work_process1 = await TodoProcess.createOrUpdate(process1_args, project1_args, program2_args);
+    work_process2 = await TodoProcess.createOrUpdate(process2_args, project1_args, program2_args);
 
+    work_project1 = await TodoProject.findByArgs(project1_args, program2_args);
 
-    work_program1 = await TodoProgram.findByName(program1_args.name);
-    work_project1 = await TodoProject.findByProjectNameAndProgramId(project1_args.name, work_program1._id);
+    work_processes_project1 = await TodoProcess.findByProjectId(work_project1._id);
 
+    expect(work_processes_project1.sort()).toEqual([work_process1, work_process2].sort());
 
-    work_processes_1st_batch  = await TodoProcess.findByProjectId(work_project1._id);
-
-
-    work_process1_p2 = await TodoProcess.createOrUpdate(process1_args, project2_args, program1_args);
-    work_process2_p2 = await TodoProcess.createOrUpdate(process2_args, project2_args, program1_args);
-
-    work_project2 = await TodoProject.findByArgs(project2_args, program1_args);
-
-    work_processes_1st_batch  = await TodoProcess.findByProjectId(work_project1._id);
-    //console.dir(work_project2);
-    //console.dir(await TodoProcess.findByProjectId(work_project2._id));
-
-    work_processes_2nd_batch  = await TodoProcess.findByProjectId(work_project2._id);
-
-    expect(work_processes_1st_batch.length).toEqual(2);
-    expect(work_processes_2nd_batch.length).toEqual(2);
-
-    //console.log(work_processes_1st_batch);
-    //console.log(work_processes_2nd_batch);
-
-    // able to use findByArgs
-    w_p_p2 = await TodoProcess.findByArgs(process2_args, project2_args, program1_args);
-    //console.log(w_p_p2);
-    expect(work_process2_p2._id).toEqual(w_p_p2._id);
   })
 
-  test('create project from programId and delete Program causing throw error to be catched', async () => {
-    work_process1_p1 = await TodoProcess.createOrUpdate(process1_args, project1_args, program3_args);
-    work_program3 = await TodoProgram.findByArgs(program3_args);
-    work_project1 = await TodoProject.findByArgs(project1_args, program3_args);
+  test('create processes from projectId and delete project causing throw error to be catched', async () => {
+    jest.setTimeout(1000);
+    work_process1 = await TodoProcess.createOrUpdate(process1_args, project1_args, program3_args);
+    work_process2 = await TodoProcess.createOrUpdate(process2_args, project1_args, program3_args);
 
-    try  {
-      work_program3 = await TodoProgram.deleteById(work_program3._id)
-    } catch(e) {
-      console.log('catching error:' + e.name + ": " + e.message);
-    }
+    work_project1 = await TodoProject.findByArgs(project1_args, program3_args);
 
     try  {
       work_project1 = await TodoProject.deleteById(work_project1._id)

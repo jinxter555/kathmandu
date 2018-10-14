@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 // compoents
 import ProgramApp from './ProgramApp';
 import ProjectApp from './ProjectApp';
+import ProcessApp from './ProcessApp';
+
+import { Container} from 'reactstrap';
+
 
 // reduce
 import {connect} from 'react-redux'
@@ -14,10 +18,21 @@ class MainApp extends Component {
       <h1>no projects </h1>
     );
 
+    const displayProcessApp = this.props.projectId ? (
+      <ProcessApp/>
+    ):(
+      <h1>no processes </h1>
+    );
+
     return (
       <div id="main-app">
-        <ProgramApp />
-        {displayProjectApp}
+        <Container>
+          <ProgramApp />
+          {displayProjectApp}
+        </Container>
+        <Container>
+          {displayProcessApp}
+        </Container>
       </div>
     );
   }
@@ -26,6 +41,7 @@ class MainApp extends Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     programId: state.programId,
+    projectId: state.projectId,
   }
 }
 export default connect(mapStateToProps)(MainApp);

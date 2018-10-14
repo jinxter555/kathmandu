@@ -24,9 +24,10 @@ class TodoProcess extends WorkProcess {
     });
   }
   static async findByProjectId(projectId) {
-    return await WorkProcess.find({workProject: projectId}, function(err, processes) {
-      return new TodoProcess(processes);
+    let processes = await WorkProcess.find({workProject: projectId}, function(err, processes) {
+      return processes;
     });
+    return processes.map(work_process => new TodoProcess(work_process));
   }
 
   static async findByArgs(process_args, project_args, program_args) {
@@ -77,10 +78,5 @@ class TodoProcess extends WorkProcess {
     return await WorkProcess.findByIdAndRemove(id);
   }
 
-  async findChildrenTasks() {
-    return await TodoProcess.findTasksByProcessId({workProcess: this._id}, function(err, tasks) {
-      return tasks;
-    });
-  }
 }
 module.exports = TodoProcess;

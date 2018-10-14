@@ -7,7 +7,12 @@ const integrationServer = require("../supporting/integrationServer");
 const MongoDB = require('../openMongo');
 
 const TodoProgram = require('../todo_src/TodoProgram');
+const TodoProject = require('../todo_src/TodoProject');
+const TodoProcess = require('../todo_src/TodoProcess');
 const WorkProgram = require('../models/WorkProgram');
+const WorkProject = require('../models/WorkProject');
+const WorkProcess = require('../models/WorkProcess');
+const WorkTask = require('../models/WorkTask');
 
 
 
@@ -16,6 +21,8 @@ var task1, task2, task1_found, task2_found, task3, task3_found,
   program2_args = { name: 'my program 2', description: faker.lorem.sentence()},
   project1_args = { name: 'my project 1', description: faker.lorem.sentence()},
   project2_args = { name: 'my project 2', description: faker.lorem.sentence()},
+  process1_args = { name: 'my process 1', description: faker.lorem.sentence()},
+  process2_args = { name: 'my process 2', description: faker.lorem.sentence()},
   task1_args = { description: 'my task 1: wash your hands' },
   task2_args = { description: 'my task 2: wash your feet' },
   task3_args = { description: 'my task 3: take a shower' };
@@ -59,37 +66,27 @@ describe('Integration', () => {
 
   });
 
-  test('Should list programs', async () => {
-    let work_program = await TodoProgram.createOrUpdate(program1_args);
-    const query = `{
-      programs {
-        id
-        name
-        description
-      }
-    }`;
-    return integrationServer
-      .graphqlQuery(app, query)
-      .then((response) => {
-        expect(response.statusCode).toEqual(200);
-        expect(response.body.programs[0].name).toEqual(program1_args.name);
-      });
-  });
+  test('should able create a project/process and should able to query the project for the process', async () => {
+    let work_process1 = await TodoProcess.createOrUpdate(process1_args, project1_args, program1_args);
+    let work_project1 = await TodoProject.findByArgs(project1_args, program1_args);
 
-  test('query program by id', async () => {
-    let work_program = await TodoProgram.createOrUpdate(program2_args);
     const query = `{
-      program(id: "${work_program._id}") {
+      project(id: "${work_project1._id}") {
         id
         name
         description
+        processes {
+          name
+        }
       }
     }`;
+
     return integrationServer
       .graphqlQuery(app, query)
       .then((response) => {
         expect(response.statusCode).toEqual(200);
-        expect(response.body.program.name).toEqual(program2_args.name);
+        expect(response.body.project.name).toEqual(project1_args.name);
+        expect(response.body.project.processes[0].name).toEqual(process1_args.name);
       });
   });
 

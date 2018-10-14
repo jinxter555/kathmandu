@@ -8,36 +8,41 @@ class TodoProject extends WorkProject {
     return this;
   }
   static async createOrUpdate(project_args, program_args) {
-    // return await WorkProject.WorkProject(project_args, program_args);
-    return WorkProject.WorkProject(project_args, program_args)
+    let project = await WorkProject.WorkProject(project_args, program_args)
       .then(project => {
-        return new TodoProject(project);
+        return project;
       });
+    return new TodoProject(project);
+
   }
   static async findById(id) {
-    return await WorkProject.findById(id, function(err, project) {
-      return new TodoProject(project);
+    let project = await WorkProject.findById(id, function(err, project) {
+      return project;
     });
+    return new TodoProject(project);
   }
 
   static async findByProjectNameAndProgramId(name, programId) {
-    return await WorkProject.findOne({name: name, workProgram: programId}, function(err, project) {
-      return new TodoProject(project);
+    let project = await WorkProject.findOne({name: name, workProgram: programId}, function(err, project) {
+      return project;
     });
+    return new TodoProject(project);
   }
   static async findByArgs(project_args, program_args) {
     let program = await TodoProgram.findByArgs(program_args);
 
-    return await WorkProject.findOne({name: project_args.name, workProgram: program._id},
+    let project = await WorkProject.findOne({name: project_args.name, workProgram: program._id},
       function(err, project) {
-        return new TodoProject(project);
+        return project;
     });
+    return new TodoProject(project);
   }
 
   static async findByProgramId(programId) {
-    return await WorkProject.find({workProgram: programId}, function(err, projects) {
-      return projects.map(project => new TodoProject(project));
+    let projects = await WorkProject.find({workProgram: programId}, function(err, projects) {
+      return projects;
     });
+    return projects.map(project => new TodoProject(project));
   }
 
   static async createOrUpdateByProgramId(programId, project_args) {

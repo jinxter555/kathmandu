@@ -8,19 +8,6 @@ import {selectProject} from '../actions/projectActions'
 const uuidv1 = require('uuid/v1')
 
 class ProjectList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selected: null
-    }
-  }
-
-  setStateSlected(selected) {
-    this.setState({
-      selected: selected
-    })
-  }
-
   deleteProject(projectId) {
     console.log(projectId)
   }
@@ -34,8 +21,8 @@ class ProjectList extends Component {
         return (
           <ListGroup key={uuidv1()}>
             <ListGroupItem key={project.id} >
-              <ProjectItem project={project} 
-                selectProject={this.props.selectProject} 
+              <ProjectItem project={project}
+                selectProject={this.props.selectProject}
                 deleteProject={this.deleteProject}
                 />
             </ListGroupItem>
@@ -45,11 +32,6 @@ class ProjectList extends Component {
     }
   }
   render() {
-    var description = this.state.selected ? (
-      this.state.selected
-    ) : (
-      <h1>No Description</h1>
-    );
     var projectsListing = this.props.programId ? (
       this.displayProjects()
     ) : (
@@ -58,7 +40,6 @@ class ProjectList extends Component {
     return(
       <div>
         {projectsListing}
-        {description}
       </div>
     );
   }
@@ -66,11 +47,6 @@ class ProjectList extends Component {
 
 
 class ProjectItem extends Component {
-  /*
-  constructor(props) {
-    super(props);
-  }
-  */
   onClickDelete(id) {
     this.props.deleteProject(id)
   }
@@ -83,12 +59,12 @@ class ProjectItem extends Component {
         <span  onClick = {(e) => {
           selectProject(project.id);
          }}> {project.name} {project.id} </span>
-        <Button 
-          className="pull-right" 
+        <Button
+          className="pull-right"
           color="danger"
-          onClick={this.onClickDelete.bind(this, project.id)} 
+          onClick={this.onClickDelete.bind(this, project.id)}
         >
-          <span className="glyphicon glyphicon-remove"></span> 
+          <span className="glyphicon glyphicon-remove"></span>
           {' '}Delete
         </Button>
       </div>

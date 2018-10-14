@@ -29,9 +29,10 @@ function start(done, appPort) {
 };
 
 function stop(app, done) {
-  console.log("server in stop----");
+  console.log("server in stop before close----");
   app.close();
-  done();
+  console.log("server in stop after close----");
+  //done();
 };
 
 function graphqlQuery(app, query) {

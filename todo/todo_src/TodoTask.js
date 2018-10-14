@@ -27,9 +27,10 @@ class TodoTask extends WorkTask {
 
   }
   static async findByProcessId(processId) {
-    return await WorkTask.find({workProcess: processId}, function(err, tasks) {
-      return tasks.map(task => new TodoTask(task));
+    let tasks = await WorkTask.find({workProcess: processId}, function(err, tasks) {
+      return tasks;
     });
+    return tasks.map(task => new TodoTask(task))
   }
 
   static async findByArgs(task_args, process_args, project_args, program_args) {

@@ -1,6 +1,7 @@
 const graphql = require('graphql');
 const TodoProgram = require('../todo_src/TodoProgram');
 const TodoProject = require('../todo_src/TodoProject');
+const TodoProcess = require('../todo_src/TodoProcess');
 
 const {
   GraphQLObjectType,
@@ -12,12 +13,27 @@ const {
   GraphQLNonNull
 } = graphql;
 
+const ProcessType = new GraphQLObjectType({
+  name: 'Process',
+  fields: () => ({
+    id: {type: GraphQLID},
+    name: {type: GraphQLString},
+    description: {type: GraphQLString},
+  })
+});
+
 const ProjectType = new GraphQLObjectType({
   name: 'Project',
   fields: () => ({
     id: {type: GraphQLID},
     name: {type: GraphQLString},
     description: {type: GraphQLString},
+    processes: {
+      type: GraphQLList(ProcessType),
+      resolve(parent, args) {
+        return TodoProcess.findByProjectId(parent._id);
+      }
+    },
   })
 });
 
@@ -28,7 +44,7 @@ const ProgramType = new GraphQLObjectType({
     name: {type: GraphQLString},
     description: {type: GraphQLString},
     projects: {
-      type: GraphQLList(ProgramType),
+      type: GraphQLList(ProjectType),
       resolve(parent, args) {
         return TodoProject.findByProgramId(parent._id);
       }
@@ -39,6 +55,13 @@ const ProgramType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
+    project: {
+      type: ProjectType,
+      args: {id: {type: GraphQLID}},
+      resolve(parent, args) {
+        return TodoProject.findById(args.id)
+      }
+    },
     program: {
       type: ProgramType,
       args: {id: {type: GraphQLID}},
@@ -53,11 +76,6 @@ const RootQuery = new GraphQLObjectType({
         return TodoProgram.findAll();
       }
     },
-    projects: {
-      type: new GraphQLList(ProjectType),
-      resolve(parent, args) {
-      }
-    }
   }
 });
 
@@ -95,11 +113,36 @@ const Mutation =  new GraphQLObjectType({
         description: {type: GraphQLString}
       },
       resolve(parent, args) {
-        program_args = {
+        project_args = {
           name: args.name,
           description: args.description
         }
-        return TodoProject.createOrUpdateByProgramId(args.id, program_args)
+        return TodoProject.createOrUpdateByProgramId(args.id, project_args)
+      }
+    },
+    delProject: {
+      type: ProjectType,
+      args: {
+        id: {type: GraphQLID}
+      },
+      resolve(parent, args) {
+        console.log("hello del project")
+        return TodoProject.deleteById(args.id);
+      }
+    },
+    addProcessByProjectId: {
+      type: ProcessType,
+      args: {
+        id: {type: GraphQLID},
+        name: {type: GraphQLString},
+        description: {type: GraphQLString}
+      },
+      resolve(parent, args) {
+        process_args = {
+          name: args.name,
+          description: args.description
+        }
+        return TodoProcess.createOrUpdateByProjectId(args.id, process_args)
       }
     }
   }

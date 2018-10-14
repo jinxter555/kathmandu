@@ -7,7 +7,7 @@ const integrationServer = require("../supporting/integrationServer");
 const MongoDB = require('../openMongo');
 
 const TodoProgram = require('../todo_src/TodoProgram');
-const WorkTask = require('../models/WorkTask');
+const TodoProject = require('../todo_src/TodoProject');
 
 
 
@@ -21,15 +21,13 @@ var task1, task2, task1_found, task2_found, task3, task3_found,
   task2_args = { description: 'my task 2: wash your feet' },
   task3_args = { description: 'my task 3: take a shower' };
 
-var work_program1;
-var work_program2;
 
 describe('Integration', () => {
   let app;
 
   beforeAll(async (done) => {
     // jest.setTimeout(1000);
-    MongoDB.open('dev');
+    MongoDB.open('test');
     app = integrationServer.start(done);
 
     /*
@@ -52,10 +50,9 @@ describe('Integration', () => {
   });
 
   test('mutation add project ', async () => {
-    work_program1 = await TodoProgram.createOrUpdate(program1_args);
-    work_program2 = await TodoProgram.createOrUpdate(program2_args);
+    let work_program1 = await TodoProgram.createOrUpdate(program1_args);
 
-    var query = `
+    let query = `
     mutation {
       addProjectByProgramId(
         id: "${work_program1._id}",
@@ -67,21 +64,20 @@ describe('Integration', () => {
         }
     }`;
 
-    console.log(query);
     return integrationServer
       .graphqlQuery(app, query)
       .then((response) => {
         expect(response.statusCode).toEqual(200);
         console.log(response.body);
-        //expect(response.body.addProjectByProgramId.name).toEqual(project1_args.name);
+        expect(response.body.addProjectByProgramId.name).toEqual(project1_args.name);
       });
   });
 
-  xtest('mutation del program ', async () => {
-    work_program1 = await TodoProgram.WorkProgram(program_args);
-    var query = `
+  test('mutation del project ', async () => {
+    let work_project1 = await TodoProject.createOrUpdate(project1_args, program2_args);
+    let  query = `
     mutation {
-      delProgram(id: "${work_program._id}") {
+      delProject(id: "${work_project1._id}") {
         id
         name
         description
@@ -92,8 +88,9 @@ describe('Integration', () => {
     return integrationServer
       .graphqlQuery(app, query)
       .then((response) => {
+        console.dir(response);
         expect(response.statusCode).toEqual(200);
-        expect(response.body.delProgram.id).toEqual(work_program._id.toString());
+        //expect(response.body.delProject.id).toEqual(work_project1._id.toString());
       });
   });
 

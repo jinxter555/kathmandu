@@ -58,31 +58,31 @@ describe('Todo process class test',  () => {
   });
 
   //-------------------------  Test suites here
-  test('able to use TodoTask class to create new task object', async () => {
+  xtest('able to use TodoTask class to create new task object', async () => {
     jest.setTimeout(1000);
-    work_task1 = await TodoTask.createOrUpdate(task1_args, process1_args, project1_args, program1_args);
-    work_task1_found_by_id = await TodoTask.findById(work_task1._id);
+    let work_task1 = await TodoTask.createOrUpdate(task1_args, process1_args, project1_args, program1_args);
+    let work_task1_found_by_id = await TodoTask.findById(work_task1._id);
 
     console.log(work_task1_found_by_id.constructor.name);
 
     expect(work_task1_found_by_id.name).toEqual(work_task1.name);
 
-    work_task1_found_by_args = await TodoTask.findByArgs(task1_args, process1_args, project1_args, program1_args);
+    let work_task1_found_by_args = await TodoTask.findByArgs(task1_args, process1_args, project1_args, program1_args);
 
     //console.log(work_task1_found_by_args);
     expect(work_task1_found_by_args.name).toEqual(work_task1.name);
   })
 
   test('able to use TodoTask class to create new task object by using processId', async () => {
-    work_task1 = await TodoTask.createOrUpdate(task1_args, process1_args, project1_args, program1_args);
-    work_process1 = await TodoProcess.findByArgs(process1_args, project1_args, program1_args);
-    work_task2 = await TodoTask.createOrUpdateByProcessId(work_process1._id, task2_args);
+    let work_task1 = await TodoTask.createOrUpdate(task1_args, process1_args, project1_args, program1_args);
+    let work_process1 = await TodoProcess.findByArgs(process1_args, project1_args, program1_args);
+    let work_task2 = await TodoTask.createOrUpdateByProcessId(work_process1._id, task2_args);
 
-    //tasks = await work_process1.findChildrenTasks();
-
-    console.log(work_task1.constructor.name);
-    console.log(work_task2.constructor.name);
-    console.log(work_process1.constructor.name);
+    let work_tasks = await TodoTask.findByProcessId(work_process1._id);
+    //console.log(work_tasks);
+    expect(work_tasks.sort()).toEqual([work_task1,work_task2].sort());
+    //console.log(work_task2.constructor.name);
+    //console.log(work_process1.constructor.name);
 
   })
 
