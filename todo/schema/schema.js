@@ -96,13 +96,6 @@ const RootQuery = new GraphQLObjectType({
       resolve(parent, args) {
         return TodoProgram.findAll();
       }
-    },
-    processes: {
-      type: new GraphQLList(ProcessType),
-      resolve(parent, args) {
-        // return list of processes;
-        return TodoProcess.findAll();
-      }
     }
   }
 });
@@ -165,8 +158,6 @@ const Mutation =  new GraphQLObjectType({
         description: {type: GraphQLString}
       },
       resolve(parent, args) {
-        console.log("add process by projectId")
-        console.dir(args)
         process_args = {
           name: args.name,
           description: args.description
@@ -181,6 +172,28 @@ const Mutation =  new GraphQLObjectType({
       },
       resolve(parent, args) {
         return TodoProcess.deleteById(args.id);
+      }
+    },
+    addTaskByProcessId: {
+      type: TaskType,
+      args: {
+        id: {type: GraphQLID},
+        description: {type: GraphQLString}
+      },
+      resolve(parent, args) {
+        task_args = {
+          description: args.description
+        }
+        return TodoTask.createOrUpdateByProcessId(args.id, task_args)
+      }
+    },
+    delTask: {
+      type: TaskType,
+      args: {
+        id: {type: GraphQLID}
+      },
+      resolve(parent, args) {
+        return TodoTask.deleteById(args.id);
       }
     }
   }

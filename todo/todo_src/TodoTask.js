@@ -45,14 +45,14 @@ class TodoTask extends WorkTask {
   }
 
   static async createOrUpdateByProcessId(processId, task_args) {
+    let args = Object.create( task_args ); // prevent this function from modifying projects_args
     let workProcess = await TodoProcess.findById(processId) 
-    args = Object.create( task_args ); // prevent this function from modifying projects_args
     args.workProcess = workProcess    
 
     if(args.workProcess === null) {
       return null;
     }
-    task =  await WorkTask.findOneAndUpdate({description: args.description, workProcess: args.workProcess}, args, {
+    let task =  await WorkTask.findOneAndUpdate({description: args.description, workProcess: args.workProcess}, args, {
       upsert: true,
       new: true,
       overwrite: true, function(err, model) { }
@@ -62,7 +62,7 @@ class TodoTask extends WorkTask {
   //static async deleteById(id) {
 
   static async deleteById(id) {
-    return await WorkProcess.findByIdAndDelete(id);
+    return await WorkTask.findByIdAndRemove(id);
   }
 }
 module.exports = TodoTask;
