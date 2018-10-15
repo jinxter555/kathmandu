@@ -32,7 +32,7 @@ var task1, task2, task1_found, task2_found, task3, task3_found,
 describe('Todo process class test',  () => {
 
   beforeAll(async () => {
-    MongoDB.open('dev');
+    MongoDB.open('test');
 
     WorkProcess.remove({}, function(err) {
       //console.log('collection removed')
@@ -80,6 +80,9 @@ describe('Todo process class test',  () => {
     work_process2 = await TodoProcess.createOrUpdate(process2_args, project1_args, program3_args);
 
     work_project1 = await TodoProject.findByArgs(project1_args, program3_args);
+
+    work_process3 = await TodoProcess.createOrUpdateByProjectId(work_project1._id, process3_args);
+    expect(work_process3.name).toMatch(process3_args.name);
 
     try  {
       work_project1 = await TodoProject.deleteById(work_project1._id)

@@ -47,7 +47,7 @@ class TodoProcess extends WorkProcess {
     if(args.workProject === null) {
       return null;
     }
-    work_process =  await WorkProcess.findOneAndUpdate({name: args.name, workProject: args.workProject._id}, args, {
+    let work_process =  await WorkProcess.findOneAndUpdate({name: args.name, workProject: args.workProject._id}, args, {
       upsert: true,
       new: true,
       overwrite: true, function(err, model) { }
@@ -78,5 +78,8 @@ class TodoProcess extends WorkProcess {
     return await WorkProcess.findByIdAndRemove(id);
   }
 
+  static async findAll() {
+    return WorkProcess.find();
+  }
 }
 module.exports = TodoProcess;

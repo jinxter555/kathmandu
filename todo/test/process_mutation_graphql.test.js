@@ -21,7 +21,6 @@ const TodoProcess = require('../todo_src/TodoProcess');
 var task1, task2, task1_found, task2_found, task3, task3_found,
   program1_args = { name: 'my program 1', description: faker.lorem.sentence()},
   program2_args = { name: 'my program 2', description: faker.lorem.sentence()},
-  program3_args = { name: 'my program 3', description: faker.lorem.sentence()},
   project1_args = { name: 'my project 1', description: faker.lorem.sentence()},
   project2_args = { name: 'my project 2', description: faker.lorem.sentence()},
   process1_args = { name: 'my work process 1', description: faker.lorem.sentence()},
@@ -61,15 +60,15 @@ describe('Integration', () => {
       //p = await WorkTask.find({null: null});
   });
 
-  test('mutation add project ', async () => {
-    let work_program1 = await TodoProgram.createOrUpdate(program1_args);
+  test('mutation add process ', async () => {
+    let work_project1 = await TodoProject.createOrUpdate(project1_args, program1_args);
 
     let query = `
     mutation {
-      addProjectByProgramId(
-        id: "${work_program1._id}",
-        name: "${project1_args.name}",
-        description: "${project1_args.description}") {
+      addProcessByProjectId(
+        id: "${work_project1._id}",
+        name: "${process1_args.name}",
+        description: "${process1_args.description}") {
           id
           name
           description
@@ -81,48 +80,29 @@ describe('Integration', () => {
       .then((response) => {
         expect(response.statusCode).toEqual(200);
         //console.log(response.body);
-        expect(response.body.addProjectByProgramId.name).toEqual(project1_args.name);
+        expect(response.body.addProcessByProjectId.name).toEqual(process1_args.name);
       });
   });
 
-  test('mutation del project ', async () => {
-    let work_project1 = await TodoProject.createOrUpdate(project1_args, program2_args);
+  test('mutation del process ', async () => {
+    let work_process1 = await TodoProcess.createOrUpdate(process1_args, project1_args, program2_args);
     let query = `
     mutation {
-      delProject(id: "${work_project1._id}") {
+      delProcess(id: "${work_process1._id}") {
         id
         name
         description
       }
     }`;
 
+    console.log(query);
     return integrationServer
       .graphqlQuery(app, query)
       .then((response) => {
+        //console.dir(response);
         expect(response.statusCode).toEqual(200);
-        expect(response.body.delProject.id).toEqual(work_project1._id.toString());
+        expect(response.body.delProcess.id).toEqual(work_process1._id.toString());
       });
   });
-
-  test('mutation del project with processes attached to the project', async () => {
-    let work_process1 = await TodoProcess.createOrUpdate(process1_args, project1_args, program3_args);
-    let work_project1 = await TodoProject.findByArgs(project1_args, program3_args);
-    let query = `
-    mutation {
-      delProject(id: "${work_project1._id}") {
-        id
-        name
-        description
-      }
-    }`;
-
-    return integrationServer
-      .graphqlQuery(app, query)
-      .then((response) => {
-        expect(response.statusCode).toEqual(200);
-        expect(response.body.delProject).toBeNull();
-      });
-  });
-
 
 });

@@ -33,7 +33,7 @@ var task1, task2, task1_found, task2_found, task3, task3_found,
 describe('Todo process class test',  () => {
 
   beforeAll(async () => {
-    MongoDB.open('test');
+    MongoDB.open('dev');
 
     WorkTask.remove({}, function(err) {
       //console.log('collection removed')

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 import {connect} from 'react-redux'
-import {getProgramQuery } from '../queries/queries';
+import {getProgramsQuery, getProgramQuery, delProjectMutation } from '../queries/queries';
 import { ListGroup, ListGroupItem, Button } from 'reactstrap';
 import {selectProject} from '../actions/projectActions'
 
@@ -9,7 +9,17 @@ const uuidv1 = require('uuid/v1')
 
 class ProjectList extends Component {
   deleteProject(projectId) {
-    console.log(projectId)
+    if(!projectId) {console.log("no project Id")}
+    console.log("programId: "+ this.props.programId)
+    console.log("projectId: "+ projectId)
+    console.dir(this.props)
+    this.props.delProjectMutation({
+      variables: {
+        id: projectId
+      },
+      refetchQueries: [{ query: getProgramQuery, variables: { id: this.props.programId } }]
+    })
+    console.log("hello world")
   }
 
   displayProjects() {
@@ -23,7 +33,7 @@ class ProjectList extends Component {
             <ListGroupItem key={project.id} >
               <ProjectItem project={project}
                 selectProject={this.props.selectProject}
-                deleteProject={this.deleteProject}
+                deleteProject={this.deleteProject.bind(this, project.id)}
                 />
             </ListGroupItem>
           </ListGroup>
@@ -48,7 +58,8 @@ class ProjectList extends Component {
 
 class ProjectItem extends Component {
   onClickDelete(id) {
-    this.props.deleteProject(id)
+    this.props.selectProject(null);
+    this.props.deleteProject(id);
   }
   render() {
     let project = this.props.project;
@@ -58,6 +69,7 @@ class ProjectItem extends Component {
       <div>
         <span  onClick = {(e) => {
           selectProject(project.id);
+
          }}> {project.name} {project.id} </span>
         <Button
           className="pull-right"
@@ -75,6 +87,7 @@ class ProjectItem extends Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     programId: state.programId,
+    projectId: state.projectId,
   }
 }
 
@@ -88,6 +101,8 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
+  graphql(delProjectMutation, {name: "delProjectMutation"}),
+  graphql(getProgramsQuery, {name: "getProgramsQuery"}),
   graphql(getProgramQuery, {
     name: "getProgramQuery",
     options: (props) => { return { variables: {id: props.programId}} }

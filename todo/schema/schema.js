@@ -2,6 +2,7 @@ const graphql = require('graphql');
 const TodoProgram = require('../todo_src/TodoProgram');
 const TodoProject = require('../todo_src/TodoProject');
 const TodoProcess = require('../todo_src/TodoProcess');
+const TodoTask = require('../todo_src/TodoTask');
 
 const {
   GraphQLObjectType,
@@ -13,12 +14,26 @@ const {
   GraphQLNonNull
 } = graphql;
 
+const TaskType = new GraphQLObjectType({
+  name: 'Task',
+  fields: () => ({
+    id: {type: GraphQLID},
+    description: {type: GraphQLString},
+  })
+});
+
 const ProcessType = new GraphQLObjectType({
   name: 'Process',
   fields: () => ({
     id: {type: GraphQLID},
     name: {type: GraphQLString},
     description: {type: GraphQLString},
+    tasks: {
+      type: GraphQLList(TaskType),
+      resolve(parent, args) {
+        return TodoTask.findByProcessId(parent._id);
+      }
+    },
   })
 });
 
@@ -55,6 +70,13 @@ const ProgramType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
+    process: {
+      type: ProcessType,
+      args: {id: {type: GraphQLID}},
+      resolve(parent, args) {
+        return TodoProcess.findById(args.id)
+      }
+    },
     project: {
       type: ProjectType,
       args: {id: {type: GraphQLID}},
@@ -72,10 +94,16 @@ const RootQuery = new GraphQLObjectType({
     programs: {
       type: new GraphQLList(ProgramType),
       resolve(parent, args) {
-        // return list of programs;
         return TodoProgram.findAll();
       }
     },
+    processes: {
+      type: new GraphQLList(ProcessType),
+      resolve(parent, args) {
+        // return list of processes;
+        return TodoProcess.findAll();
+      }
+    }
   }
 });
 
@@ -126,7 +154,6 @@ const Mutation =  new GraphQLObjectType({
         id: {type: GraphQLID}
       },
       resolve(parent, args) {
-        console.log("hello del project")
         return TodoProject.deleteById(args.id);
       }
     },
@@ -138,11 +165,22 @@ const Mutation =  new GraphQLObjectType({
         description: {type: GraphQLString}
       },
       resolve(parent, args) {
+        console.log("add process by projectId")
+        console.dir(args)
         process_args = {
           name: args.name,
           description: args.description
         }
         return TodoProcess.createOrUpdateByProjectId(args.id, process_args)
+      }
+    },
+    delProcess: {
+      type: ProcessType,
+      args: {
+        id: {type: GraphQLID}
+      },
+      resolve(parent, args) {
+        return TodoProcess.deleteById(args.id);
       }
     }
   }

@@ -41,7 +41,7 @@ const addProgramMutation = gql`
     addProgram(name: $name, description: $description) {
       id
       name
-    description
+      description
   }
 }`;
 
@@ -50,18 +50,16 @@ const delProgramMutation = gql`
     delProgram(id: $id) {
       id
       name
-    description
-  }
-}`;
+      description
+}}`;
 
 const delProjectMutation = gql`
   mutation($id: ID!) { 
     delProject(id: $id) {
       id
       name
-    description
-  }
-}`;
+      description
+}}`;
 
 const addProjectByProgramIdMutation = gql`
   mutation($id: ID!, $name: String!, $description: String!) { 
@@ -69,7 +67,6 @@ const addProjectByProgramIdMutation = gql`
       id
       name
       description
-  }
-}`;
+}}`;
       
 export {getProgramsQuery, getProgramQuery, getProjectQuery, addProgramMutation, delProgramMutation, delProjectMutation, addProjectByProgramIdMutation}
