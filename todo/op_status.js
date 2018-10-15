@@ -7,7 +7,7 @@ var OPStatus = Object.freeze({
   'terminated': 3,  // task termination  requirement not met
   'suspended': 4,
   'cancelled': 5,
-  'not_started': 6,
+  'not_started': 6,   // created  by the project manager or user .. use a template for replicating tasks
   'waiting': 7,
   'rejected': 8,     // rejected task by project manager/supervisor
 });

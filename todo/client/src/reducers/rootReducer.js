@@ -1,6 +1,7 @@
 import { SELECT_PROGRAM } from '../actions/types';
 import { SELECT_PROJECT } from '../actions/types';
 import { SELECT_PROCESS } from '../actions/types';
+import { SELECT_TASK } from '../actions/types';
 
 const initState = {
   programId: null,
@@ -29,6 +30,11 @@ const rootReducer = (state = initState, action) => {
         ...state,
         processId: action.processId,
         taskId: null
+      }
+    case SELECT_TASK:
+      return {
+        ...state,
+        taskId: action.taskId
       }
     default: return state;
   }

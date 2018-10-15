@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import ProgramApp from './ProgramApp';
 import ProjectApp from './ProjectApp';
 import ProcessApp from './ProcessApp';
+import TaskApp from './TaskApp';
 
 import { Container} from 'reactstrap';
 
@@ -24,6 +25,13 @@ class MainApp extends Component {
       <h1>no processes </h1>
     );
 
+    const displayTaskApp = this.props.processId ? (
+      <TaskApp/>
+    ):(
+      <h1>no Tasks </h1>
+    );
+
+
     return (
       <div id="main-app">
         <Container>
@@ -32,6 +40,7 @@ class MainApp extends Component {
         </Container>
         <Container>
           {displayProcessApp}
+          {displayTaskApp}
         </Container>
       </div>
     );
@@ -42,6 +51,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     programId: state.programId,
     projectId: state.projectId,
+    processId: state.processId,
+    taskId: state.taskId,
   }
 }
 export default connect(mapStateToProps)(MainApp);

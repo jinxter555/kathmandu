@@ -10,15 +10,15 @@ const uuidv1 = require('uuid/v1')
 class ProjectList extends Component {
   deleteProject(projectId) {
     if(!projectId) {console.log("no project Id")}
-    console.log("programId: "+ this.props.programId)
-    console.log("projectId: "+ projectId)
-    console.dir(this.props)
     this.props.delProjectMutation({
       variables: {
         id: projectId
       },
       refetchQueries: [{ query: getProgramQuery, variables: { id: this.props.programId } }]
-    })
+    }).catch(function(error) {
+      console.log(error);
+      alert("Some processes are still referencing the Project")
+    });
     console.log("hello world")
   }
 

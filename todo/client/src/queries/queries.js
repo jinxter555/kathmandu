@@ -36,6 +36,20 @@ const getProjectQuery = gql`
     }
   }`;
 
+const getProcessQuery = gql`
+  query($id: ID!) {
+    process(id: $id) {
+      id
+      name
+      description
+      tasks  {
+        id
+        description
+      }
+    }
+  }`;
+
+
 const addProgramMutation = gql`
   mutation($name: String!, $description: String!) { 
     addProgram(name: $name, description: $description) {
@@ -68,5 +82,25 @@ const addProjectByProgramIdMutation = gql`
       name
       description
 }}`;
+
+const  addProcessByProjectIdMutation = gql`
+  mutation($id: ID!, $name: String!, $description: String!) { 
+    addProcessByProjectId(id: $id, name: $name, description: $description) {
+      id
+      name
+      description
+}}`;
+
+const  addTaskByProcessIdMutation = gql`
+  mutation($id: ID!, $description: String!) { 
+    addTaskByProcessId(id: $id, description: $description) {
+      id
+      description
+}}`;
       
-export {getProgramsQuery, getProgramQuery, getProjectQuery, addProgramMutation, delProgramMutation, delProjectMutation, addProjectByProgramIdMutation}
+export {
+  getProgramsQuery, getProgramQuery, getProjectQuery,  getProcessQuery,
+  addProgramMutation, addProjectByProgramIdMutation, 
+  addProcessByProjectIdMutation, addTaskByProcessIdMutation,
+  delProgramMutation, delProjectMutation
+}
