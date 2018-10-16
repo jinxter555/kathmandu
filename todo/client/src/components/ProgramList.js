@@ -11,18 +11,19 @@ const uuidv1 = require('uuid/v1')
 class ProgramList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      selected: null
-    }
   }
-  onClickDelete = id => {
-    console.log("delete: " + id);
+
+  deleteProgram(programId) {
+    console.log("delete: " + programId);
     this.props.delProgramMutation({
       variables: {
-        id: id
+        id: programId
       },
       refetchQueries: [{ query: getProgramsQuery}]
-    })
+    }).catch(function(error) {
+      console.log(error);
+      alert("there are projects still referencing this program")
+    });
   }
 
   displayPrograms() {
@@ -35,19 +36,11 @@ class ProgramList extends Component {
         return (
           <ListGroup key={uuidv1()}>
             <ListGroupItem key={program.id} >
-              <div>
-                <span  onClick = {(e) => {
-                  this.setState({
-                    selected: program.id
-                  })
-                  this.props.selectProgram(program.id)
-                 }}> {program.name} </span>
-                <Button className="pull-right" color="danger" 
-                  onClick ={this.onClickDelete.bind(this, program.id)} >
-                  <span className="glyphicon glyphicon-remove"></span> 
-                  {' '}Delete
-                </Button>
-              </div>
+            <ProgramItem 
+              program={program}
+              selectProgram={this.props.selectProgram}
+              deleteProgram={this.deleteProgram.bind(this, program.id)}
+            />
             </ListGroupItem>
           </ListGroup>
         )
@@ -55,16 +48,39 @@ class ProgramList extends Component {
     }
   }
   render() {
-    var description = this.state.selected ? (
-      <ProgramDetails programId = {this.state.selected} />
+    var description = this.props.programId ? (
+      <ProgramDetails programId = {this.props.programId} />
     ) : (
       <h1>No Description</h1>
     );
-
+    setInterval(this.props.getProgramsQuery.refetch , 5000)
     return(
       <div>
         {this.displayPrograms()}
         {description}
+      </div>
+    );
+  }
+}
+
+class ProgramItem extends Component {
+  onClickDelete(id) {
+    this.props.deleteProgram(id)
+    this.props.selectProgram(null)
+  }
+  render() {
+    let program = this.props.program; 
+    return(
+      <div>
+        <span  onClick = {(e) => {
+          this.props.selectProgram(program.id)
+         }}> {program.name} </span>
+
+        <Button className="pull-right" color="danger" 
+          onClick ={this.onClickDelete.bind(this, program.id)} >
+          <span className="glyphicon glyphicon-remove"></span> 
+          {' '}Delete
+        </Button>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 import {connect} from 'react-redux'
-import { getProcessQuery } from '../queries/queries';
+import { getProcessQuery, delTaskMutation } from '../queries/queries';
 import { ListGroup, ListGroupItem, Button } from 'reactstrap';
 import {selectTask} from '../actions/taskActions'
 
@@ -9,7 +9,17 @@ const uuidv1 = require('uuid/v1')
 
 class TaskList extends Component {
   deleteTask(taskId) {
-    console.log(taskId)
+    if(this.props.delTaskMutation===undefined) { return null}
+    if(!taskId) {console.log("no taskId")}
+    this.props.delTaskMutation({
+      variables: {
+        id: taskId
+      },
+      refetchQueries: [{ query: getProcessQuery, variables: { id: this.props.processId } }]
+    }).catch(function(error) {
+      console.log(error);
+      alert("can't delete taslk ")
+    });
   }
 
   displayTasks() {
@@ -23,7 +33,7 @@ class TaskList extends Component {
             <ListGroupItem key={task.id} >
               <TaskItem task={task}
                 selectTask={this.props.selectTask}
-                deleteTask={this.deleteTask}
+                deleteTask={this.deleteTask.bind(this, task.id)}
                 />
             </ListGroupItem>
           </ListGroup>
@@ -31,6 +41,7 @@ class TaskList extends Component {
       });
     }
   }
+
   render() {
     var taskListing = this.props.processId ? (
       this.displayTasks()
@@ -49,6 +60,7 @@ class TaskList extends Component {
 class TaskItem extends Component {
   onClickDelete(id) {
     this.props.deleteTask(id)
+    this.props.selectTask(null)
   }
   render() {
     let task = this.props.task;
@@ -75,6 +87,7 @@ class TaskItem extends Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     processId: state.processId,
+    taskId: state.taskId,
   }
 }
 
@@ -88,6 +101,7 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
+  graphql(delTaskMutation, {name: "delTaskMutation"}),
   graphql(getProcessQuery, {
     name: "getProcessQuery",
     options: (props) => { return { variables: {id: props.processId}} }

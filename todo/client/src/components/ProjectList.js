@@ -19,7 +19,6 @@ class ProjectList extends Component {
       console.log(error);
       alert("Some processes are still referencing the Project")
     });
-    console.log("hello world")
   }
 
   displayProjects() {
@@ -41,6 +40,7 @@ class ProjectList extends Component {
       });
     }
   }
+
   render() {
     var projectsListing = this.props.programId ? (
       this.displayProjects()
@@ -54,7 +54,6 @@ class ProjectList extends Component {
     );
   }
 }
-
 
 class ProjectItem extends Component {
   onClickDelete(id) {

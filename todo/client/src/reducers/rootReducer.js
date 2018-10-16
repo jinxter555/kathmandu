@@ -16,7 +16,9 @@ const rootReducer = (state = initState, action) => {
       return {
         ...state,
         programId: action.programId,
-        projectId: null
+        projectId: null,
+        processId: null,
+        taskId: null
       }
     case SELECT_PROJECT:
       return {

@@ -75,6 +75,21 @@ const delProjectMutation = gql`
       description
 }}`;
 
+const delProcessMutation = gql`
+  mutation($id: ID!) { 
+    delProcess(id: $id) {
+      id
+      name
+      description
+}}`;
+
+const delTaskMutation = gql`
+  mutation($id: ID!) { 
+    delTask(id: $id) {
+      id
+      description
+}}`;
+
 const addProjectByProgramIdMutation = gql`
   mutation($id: ID!, $name: String!, $description: String!) { 
     addProjectByProgramId(id: $id, name: $name, description: $description) {
@@ -102,5 +117,6 @@ export {
   getProgramsQuery, getProgramQuery, getProjectQuery,  getProcessQuery,
   addProgramMutation, addProjectByProgramIdMutation, 
   addProcessByProjectIdMutation, addTaskByProcessIdMutation,
-  delProgramMutation, delProjectMutation
+  delProgramMutation, delProjectMutation,
+  delProcessMutation, delTaskMutation
 }
