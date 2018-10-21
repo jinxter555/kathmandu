@@ -11,7 +11,7 @@ const WorkTaskSchema = new Schema({
     required: true,
   },
   status: {
-    type: Number,
+    type: String,
     default: OPStatus.not_started
   },
   workProcess: {type : Schema.Types.ObjectId, ref: 'WorkProcesses' },
@@ -28,7 +28,7 @@ WorkTaskSchema.statics.WorkTask = async function(task_args, process_args, projec
   // this has to be first because of promise
   workProcess = await WorkProcess.WorkProcess(process_args, project_args, program_args).catch(e => {console.log(e)});  // this has to be first because of promise
   // after work process promise
-  args = Object.create(task_args); // prevent this function from modifying process_args
+  args = Object.assign({}, task_args); // prevent this function from modifying process_args
   args.workProcess = workProcess
 
   task  = await WorkTask.findOneAndUpdate({description: args.description, workProcess: args.workProcess}, args, {

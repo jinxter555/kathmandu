@@ -15,17 +15,18 @@ const WorkProcessSchema = new Schema({
     required: true,
   },
   status: {
-    type: Number,
+    type: String,
     default: OPStatus.not_started
   },
   workProject: {type : Schema.Types.ObjectId, ref: 'WorkProjects' },
 });
 
 WorkProcessSchema.index({name: 1, workProject: 1}, {unique: true});
+WorkProcessSchema.index({description: 1}, {unique: false});
 
 WorkProcessSchema.statics.WorkProcess = async function(process_args, project_args, program_args) {
   workProject = await WorkProject.WorkProject(project_args, program_args).catch(e => {console.log(e)});
-  args = Object.create(process_args) // prevent this function from modifying process_args
+  args = Object.assign({}, process_args) // prevent this function from modifying process_args
   args.workProject = workProject;
 
   workProcess = await WorkProcess.findOneAndUpdate({name: args.name, workProject: args.workProject}, args, {

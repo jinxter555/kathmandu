@@ -15,11 +15,15 @@ const WorkProgramSchema = new Schema({
     type: String,
     required: true,
   },
-  opStatus: {
-    type: Number,
+  status: {
+    type: String,
     default: OPStatus.not_started
   },
+  workCompany:  {type : Schema.Types.ObjectId, ref: 'WorkCompanies' }
 });
+WorkProgramSchema.index({name: 1, workCompany: 1}, {unique: true});
+WorkProgramSchema.index({description: 1}, {unique: false});
+
 
 WorkProgramSchema.statics.WorkProgram = async function(args) {
   workProgram = await WorkProgram.findOneAndUpdate({name: args.name}, args, {

@@ -1,70 +1,43 @@
-const mongoose = require('mongoose');
-const Project = require('./Project');
-const OPStatus = require('../op_status');
-const util = require('util');
+const mongoose = require('mongoose')
+const Person = require('../models/Person');
 const Schema = mongoose.Schema;
 
-const PersonSchema = new Schema({
-  first: {
-    type: String,
-  },
-  last: {
-    type: String,
-  },
-  address: {
-    type: String,
-  }
-});
-
-// Create Schema
 const WorkUserSchema = new Schema({
-  username: {
+  title: {
     type: String,
-    //required: true
+    required: true
   },
-  password: {
-    type: String,
-    //required: true
+  // other titles, list of string,
+  // array of work_roles
+  person: {
+    type : Schema.Types.ObjectId, 
+    ref: 'people',
+    index: { unique: true }
   },
-  email: {
-    type: String,
-    //required: true
-  }
 });
+WorkUserSchema.index({person: 1, title: 1}, {unique: true});
 
-
-WorkUserSchema.index({username: 1, project: 1}, {unique: true});
-
-
-WorkProcessSchema.methods.markActivated = function() {
-  this.status =  OPStatus.activated;
-}
-
-WorkProcessSchema.statics.WorkProcess = async function(args, project_args, program_args) {
-  project = await Project.Project(project_args, program_args).catch(e => {console.log(e)});
-  args.project = project
-
-  workProcess = await WorkProcess.findOneAndUpdate({name: args.name}, args, {
+WorkUserSchema.statics.WorkUser = async function(workuser_args, person_args, company_args) {
+  person = await Person.Person(person_args, company_args);
+  args = Object.create(workuser_args);
+  args.person = person
+  workUser = await WorkUser.findOneAndUpdate({ person: person._id }, args, {
     upsert: true,
     new: true,
     overwrite: true, function(err, model) { }
-  }).catch((err)  => {
-    console.log(err)
-  });
+  })
+  return workUser;
+};
 
-  return workProcess;
+WorkUserSchema.statics.findPersonAndCompany = async function(workuser_args, person_args, company_args) {
+  person = await Person.Person(person_args, company_args);
+  args = Object.assign({}, workuser_args)
+  args.person = person
+  return await WorkUser.findOne(args)
 }
-
-
-WorkProcessSchema.methods.markCompleted = function() {
-  this.status =  OPStatus.completed;
+  
+WorkUserSchema.methods.fullName = async function() {
+  person  = await Person.findById(this.person._id);
+  return person.fullName();
 }
-
-WorkProcessSchema.methods.selfInspect = function() {
-  console.log("--- self inspect---");
-  console.log("Workprocess: " + util.inspect(this, null, 4))
-  console.log("\n");
-}
-
-
-module.exports = WorkProcess = mongoose.model('WorkProcesses', WorkProcessSchema);
+module.exports = WorkUser = mongoose.model('WorkUsers',  WorkUserSchema);

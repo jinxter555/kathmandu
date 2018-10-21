@@ -15,16 +15,17 @@ const WorkProjectSchema = new Schema({
     required: true,
   },
   status: {
-    type: Number,
+    type: String,
     default: OPStatus.not_started
   },
   workProgram: {type : Schema.Types.ObjectId, ref: 'WorkPrograms' },
 });
 WorkProjectSchema.index({name: 1, workProgram: 1}, {unique: true});
+WorkProjectSchema.index({description: 1}, {unique: false});
 
 WorkProjectSchema.statics.WorkProject = async function(project_args, program_args) {
   workProgram = await WorkProgram.WorkProgram(program_args)
-  args = Object.create( project_args ); // prevent this function from modifying projects_args
+  args = Object.assign({}, project_args ); // prevent this function from modifying projects_args
   args.workProgram = workProgram;
 
   workProject = await WorkProject.findOneAndUpdate({name: args.name, workProgram: args.workProgram}, args, {
