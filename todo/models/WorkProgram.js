@@ -19,9 +19,9 @@ const WorkProgramSchema = new Schema({
     type: String,
     default: OPStatus.not_started
   },
-  workCompany:  {type : Schema.Types.ObjectId, ref: 'WorkCompanies' }
+  WorkProgramOwner:  {type : Schema.Types.ObjectId, ref: 'workentities' }
 });
-WorkProgramSchema.index({name: 1, workCompany: 1}, {unique: true});
+WorkProgramSchema.index({name: 1, WorkProgramOwner: 1}, {unique: true});
 WorkProgramSchema.index({description: 1}, {unique: false});
 
 

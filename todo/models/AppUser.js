@@ -6,7 +6,7 @@ const WorkUser = require('../models/WorkUser');
 const AppUserSchema = new Schema({
   username: {
     type: String,
-    required: true
+    index: { unique: true}
   },
   password: {
     type: String,
@@ -20,13 +20,14 @@ const AppUserSchema = new Schema({
 });
 
 AppUserSchema.index({workUser: 1}, {unique: true});
+AppUserSchema.index({username: 1}, {unique: true});
 
 
-AppUserSchema.statics.AppUser = async function(appuser_args, workuser_args, person_args) {
-  workUser = await WorkUser(workuser_args, person_args);
-  args = Object.create(appuser_args);
-  args.workUser = workUser
-  appUser = await AppUser.findOneAndUpdate({ workUser: workUser._id }, args, {
+AppUserSchema.statics.AppUser = async function(appuser_args, workuser_args, person_args, company_args) {
+  workUser = await WorkUser.WorkUser(workuser_args, person_args, company_args);
+  args = Object.assign({}, appuser_args);
+  args.workUser = workUser;
+  appUser = await AppUser.findOneAndUpdate({ workUser: workUser }, args, {
     upsert: true,
     new: true,
     overwrite: true, function(err, model) { }
@@ -38,6 +39,10 @@ AppUserSchema.statics.AppUser = async function(appuser_args, workuser_args, pers
 AppUserSchema.methods.fullName = async function() {
   workUser  = await WorkUser.findById(this.workUser._id);
   return workUser.fullName();
+}
+AppUserSchema.methods.email = async function() {
+  workUser  = await WorkUser.findById(this.workUser._id);
+  return await workUser.email();
 }
 
 module.exports = AppUser = mongoose.model('AppUsers',  AppUserSchema);

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
-const {WorkProgramOwner} = require('./WorkProgramOwner')
+const {WorkEntity} = require('./WorkEntity')
 
 //const WorkCompanySchema = new Schema({
 
@@ -30,7 +30,7 @@ WorkCompanySchema.statics.WorkCompany = async function(args) {
   })
   return company;
 }
-const WorkCompany = WorkProgramOwner.discriminator('WorkCompany', WorkCompanySchema);
+const WorkCompany = WorkEntity.discriminator('WorkCompany', WorkCompanySchema);
 
 
 module.exports = WorkCompany 

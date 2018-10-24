@@ -15,10 +15,15 @@ const PersonSchema = new Schema({
     type: String,
     required: false
   },
+  email: {
+    type: String,
+    required: false,
+  },
   workCompany:  {type : Schema.Types.ObjectId, ref: 'WorkCompanies' }
 });
 
-//PersonSchema.index({firstName: 1, lastName: 1, workCompany: 1}, {unique: true});
+PersonSchema.index({firstName: 1, lastName: 1, workCompany: 1}, {unique: true});
+PersonSchema.index({email: 1}, {unique: true});
 
 PersonSchema.statics.Person = async function(person_args, company_args) {
   workCompany = await WorkCompany.findOne(company_args)
@@ -37,6 +42,7 @@ PersonSchema.statics.Person = async function(person_args, company_args) {
     new: true,
     overwrite: true, function(err, model) { }
   }).catch(e => {console.log(e); throw Error("Person findOneupdate error")})
+
   return person;
 };
 
@@ -44,4 +50,4 @@ PersonSchema.methods.fullName = function() {
   return (this.firstName + " " + this.lastName);
 }
 
-module.exports = Person = mongoose.model('people',  PersonSchema);
+module.exports = Person = mongoose.model('person',  PersonSchema);

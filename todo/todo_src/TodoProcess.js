@@ -12,16 +12,18 @@ class TodoProcess extends WorkProcess {
   }
 
   static async createOrUpdate(process_args, project_args, program_args) {
-    return WorkProcess.WorkProcess(process_args, project_args, program_args)
+    let work_process = await WorkProcess.WorkProcess(process_args, project_args, program_args)
       .then(work_process => {
-        return new TodoProcess(work_process);
+        return (work_process);
       });
+    return new TodoProcess(work_process);
   }
 
   static async findById(id) {
-    return await WorkProcess.findById(id, function(err, work_process) {
-      return new TodoProcess(work_process);
+    let work_process = await WorkProcess.findById(id, function(err, work_process) {
+      return work_process;
     });
+    return new TodoProcess(work_process);
   }
   static async findByProjectId(projectId) {
     let processes = await WorkProcess.find({workProject: projectId}, function(err, processes) {

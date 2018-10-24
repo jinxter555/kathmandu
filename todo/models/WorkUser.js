@@ -19,7 +19,7 @@ WorkUserSchema.index({person: 1, title: 1}, {unique: true});
 
 WorkUserSchema.statics.WorkUser = async function(workuser_args, person_args, company_args) {
   person = await Person.Person(person_args, company_args);
-  args = Object.create(workuser_args);
+  args = Object.assign({}, workuser_args);
   args.person = person
   workUser = await WorkUser.findOneAndUpdate({ person: person._id }, args, {
     upsert: true,
@@ -40,4 +40,9 @@ WorkUserSchema.methods.fullName = async function() {
   person  = await Person.findById(this.person._id);
   return person.fullName();
 }
+WorkUserSchema.methods.email = async function() {
+  person  = await Person.findById(this.person._id);
+  return person.email;
+}
+module.exports = WorkUser = mongoose.model('WorkUsers',  WorkUserSchema);
 module.exports = WorkUser = mongoose.model('WorkUsers',  WorkUserSchema);

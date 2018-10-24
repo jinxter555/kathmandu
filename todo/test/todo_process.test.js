@@ -79,6 +79,7 @@ describe('Todo process class test',  () => {
     work_process1 = await TodoProcess.createOrUpdate(process1_args, project1_args, program3_args);
     work_process2 = await TodoProcess.createOrUpdate(process2_args, project1_args, program3_args);
 
+    work_process2 = await TodoProcess.createOrUpdate(process2_args, project1_args, program3_args);
     work_project1 = await TodoProject.findByArgs(project1_args, program3_args);
 
     work_process3 = await TodoProcess.createOrUpdateByProjectId(work_project1._id, process3_args);
