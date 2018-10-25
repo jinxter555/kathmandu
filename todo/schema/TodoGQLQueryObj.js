@@ -35,7 +35,9 @@ const TodoGQLQueryObj = {
     program: {
       type: ProgramType,
       args: {id: {type: GraphQLID}},
-      resolve(parent, args) {
+      resolve(parent, args, context) {
+        console.log(context.user)
+        console.dir(context)
         return TodoProgram.findById(args.id)
       }
     },

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 // compoents
+import LoginApp from './LoginApp';
 import ProgramApp from './ProgramApp';
 import ProjectApp from './ProjectApp';
 import ProcessApp from './ProcessApp';
@@ -34,6 +35,9 @@ class MainApp extends Component {
 
     return (
       <div id="main-app">
+        <Container>
+          <LoginApp/>
+        </Container>
         <Container>
           <ProgramApp />
           {displayProjectApp}

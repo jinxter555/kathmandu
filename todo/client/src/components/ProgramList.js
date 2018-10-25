@@ -9,9 +9,9 @@ import {selectProgram} from '../actions/programActions'
 const uuidv1 = require('uuid/v1')
 
 class ProgramList extends Component {
-  constructor(props) {
-    super(props);
-  }
+  //constructor(props) {
+  //  super(props);
+  //}
 
   deleteProgram(programId) {
     console.log("delete: " + programId);
@@ -32,11 +32,12 @@ class ProgramList extends Component {
     if(data.loading){
       return(<div>Loading Programs</div>)
     } else {
+      //if(!data.program) { return(<h1> nothing program</h1>) }
       return data.programs.map(program => {
         return (
           <ListGroup key={uuidv1()}>
             <ListGroupItem key={program.id} >
-            <ProgramItem 
+            <ProgramItem
               program={program}
               selectProgram={this.props.selectProgram}
               deleteProgram={this.deleteProgram.bind(this, program.id)}
@@ -53,7 +54,7 @@ class ProgramList extends Component {
     ) : (
       <h1>No Description</h1>
     );
-    setInterval(this.props.getProgramsQuery.refetch , 5000)
+    //setInterval(this.props.getProgramsQuery.refetch , 5000)
     return(
       <div>
         {this.displayPrograms()}
@@ -69,16 +70,16 @@ class ProgramItem extends Component {
     this.props.selectProgram(null)
   }
   render() {
-    let program = this.props.program; 
+    let program = this.props.program;
     return(
       <div>
         <span  onClick = {(e) => {
           this.props.selectProgram(program.id)
          }}> {program.name} </span>
 
-        <Button className="pull-right" color="danger" 
+        <Button className="pull-right" color="danger"
           onClick ={this.onClickDelete.bind(this, program.id)} >
-          <span className="glyphicon glyphicon-remove"></span> 
+          <span className="glyphicon glyphicon-remove"></span>
           {' '}Delete
         </Button>
       </div>

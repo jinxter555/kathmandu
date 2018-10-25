@@ -32,7 +32,8 @@ var person2_args = {
 var person3_args = {
   firstName: faker.name.firstName(),
   lastName: faker.name.lastName(),
-  email: faker.name.firstName() + '@somecompany.com',
+  //email: faker.name.firstName() + '@somecompany.com',
+  email: 'me@abc.com',
   workCompany: null
 }
 
@@ -76,7 +77,7 @@ var company4_args = {
 describe('person',  () => {
 
   beforeAll(async() => {
-    MongoDB.open('test');
+    MongoDB.open('dev');
 
     Person.remove({}, function(err) {
       //console.log('collection removed')
@@ -133,13 +134,22 @@ describe('person',  () => {
     appuser1_obj =  await TodoAppUser.createOrUpdate(appuser1_args, workuser1_args, person3_args, company4_args)
     appuser1_obj_found =  await TodoAppUser.findByArgs(appuser1_args, workuser1_args, person3_args, company4_args)
     appuser1_obj_found_by_email =  await TodoAppUser.findByEmail(person3_args.email)
-    //console.dir(appuser1_obj);
-    //console.dir(appuser1_obj_found);
+
+    /*
+    console.dir(appuser1_obj);
+    console.dir(appuser1_obj_found);
     console.dir(person3_args.email);
     console.dir(appuser1_obj_found_by_email);
     console.log(await appuser1_obj.email());
     console.log(await appuser1_obj.fullName());
-    expect(appuser1_obj).toEqual(appuser1_obj_found);
+    */
+
+    // console.log(appuser1_obj_found_by_email.validatePassword('p1'));
+    token = await TodoAppUser.login(person3_args.email, 'p1');
+    //token = await TodoAppUser.login('a@b.com', 'p2');
+    console.log(token);
+
+    //expect(appuser1_obj).toEqual(appuser1_obj_found);
   });
 
 });

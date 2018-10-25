@@ -21,7 +21,7 @@ const TodoProgramGQLMutObj = {
         name: {type: GraphQLString},
         description: {type: GraphQLString}
       },
-      resolve(parent, args) {
+      resolve(parent, args, context) {
         program_args = {
           name: args.name,
           description: args.description

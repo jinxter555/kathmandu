@@ -1,6 +1,6 @@
 const graphql = require('graphql');
-const {TaskType, ProcessType, ProjectType, ProgramType} = require('../schema/type');
-const TodoTask = require('../todo_src/TodoTask');
+//const {TaskType, ProcessType, ProjectType, ProgramType} = require('../schema/type');
+const TodoAppUser = require('../todo_src/TodoAppUser');
 
 const {
   GraphQLObjectType,
@@ -21,8 +21,10 @@ const TodoAppUserGQLMutObj = {
         email: {type: GraphQLString},
         password: {type: GraphQLString}
       },
-      resolve(parent, args) {
-        return TodoTask.createOrUpdateByProcessId(args.id, task_args)
+      async resolve(parent, {email, password}) {
+        token = await TodoAppUser.login(email, password)
+        console.log(token)
+        return token;
       }
     },
   }

@@ -8,6 +8,7 @@ const {TodoProgramGQLMutObj} = require('./TodoProgramGQLMutObj')
 const {TodoProjectGQLMutObj} = require('./TodoProjectGQLMutObj')
 const {TodoProcessGQLMutObj} = require('./TodoProcessGQLMutObj')
 const {TodoTaskGQLMutObj} = require('./TodoTaskGQLMutObj')
+const {TodoAppUserGQLMutObj} = require('./TodoAppUserGQLMutObj')
 
 const {
   GraphQLObjectType,
@@ -23,6 +24,7 @@ _.merge(MutationObj, TodoProgramGQLMutObj);
 _.merge(MutationObj, TodoProjectGQLMutObj);
 _.merge(MutationObj, TodoProcessGQLMutObj);
 _.merge(MutationObj, TodoTaskGQLMutObj);
+_.merge(MutationObj, TodoAppUserGQLMutObj);
 const Mutation =  new GraphQLObjectType(MutationObj);
 
 module.exports = new GraphQLSchema({

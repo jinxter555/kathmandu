@@ -112,11 +112,17 @@ const  addTaskByProcessIdMutation = gql`
       id
       description
 }}`;
+
+const  loginMutation = gql`
+  mutation($email: String!, $password: String!) { 
+    login(email: $email, password: $password)
+}`;
+      
       
 export {
   getProgramsQuery, getProgramQuery, getProjectQuery,  getProcessQuery,
   addProgramMutation, addProjectByProgramIdMutation, 
   addProcessByProjectIdMutation, addTaskByProcessIdMutation,
   delProgramMutation, delProjectMutation,
-  delProcessMutation, delTaskMutation
+  delProcessMutation, delTaskMutation, loginMutation
 }
