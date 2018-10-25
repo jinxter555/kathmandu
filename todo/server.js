@@ -16,23 +16,25 @@ var watcher = filewatcher();
 
 //---------passport
 const passport = require('passport');
-const passportJWT = require('passport-jwt');
-const jwt = require('jsonwebtoken')
-const { Strategy, ExtractJwt } = passportJWT
+//const passportJWT = require('passport-jwt');
+//const jwt = require('jsonwebtoken')
+//const { Strategy, ExtractJwt } = passportJWT
+
+const JwtStrategy = require('passport-jwt').Strategy,
+    ExtractJwt = require('passport-jwt').ExtractJwt;
 
 const SECRET='hello123';
 const params = {
   secretOrKey: 'hello123',
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
 }
-const strategy = new Strategy(params, async(payload, done) => {
-  const user = await TodoAppUser.findById(user => user.id === payload.id) || null
-  console.log("hello1")
+const strategy = new JwtStrategy(params, async(payload, done) => {
+  const user = await TodoAppUser.findById(payload.id) || null
   return done(null, user)
 })
 passport.use(strategy)
-///passport.initialize()
-//-------------
+passport.initialize()
+
 
 
 var logger = function(req, res, next) {
@@ -51,27 +53,20 @@ app.use(bodyParser.json());
 
 //-------passport auth
 app.use('/graphql', (req, res, next) => {
-  // console.log("req: " + util.inspect(req, null, 4))
-  passport.use(strategy)
   passport.authenticate('jwt', { session: false }, (err, user, info) => {
-    console.log("hello2")
-    console.log(err)
-    //console.log(user)
-    console.log(info)
-    if (user) {
-      req.user = user
-      console.log("hello3")
+    if(user) {
+      req.user = user;
     }
     next()
   })(req, res, next)
 })
 
-app.use('/graphql', graphqlHTTP( (req)=>({
+app.use('/graphql', graphqlHTTP(req=>({
   schema,
   graphiql: true,
-  context: ({ req }) => ({
+  context: {
     user: req.user
-  })
+  }
 })));
 
 app.use(express.static('public'));

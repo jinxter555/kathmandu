@@ -22,7 +22,8 @@ class AppUserLogin extends Component {
 
     }).then(res => {
       let token = res.data.login;
-      localStorage.setItem('token', JSON.stringify(token));
+      //localStorage.setItem('token', JSON.stringify(token));
+      localStorage.setItem('token', token);
       console.log(token)
     }).catch(e => { console.error(e)});
   }
