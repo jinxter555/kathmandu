@@ -64,5 +64,24 @@ class TodoTask extends WorkTask {
   static async deleteById(id) {
     return await WorkTask.findByIdAndRemove(id);
   }
+
+  // check process access table
+  // then check project access table
+  // then check program  access table
+  // CRUD = create read update delete
+  // 
+
+  checkTaskPermission(boss) { // boss should project manager  
+    return true;
+  }
+  async assignToWorkUser(boss, workuser)  {
+    if(this.checkTaskPermission(boss) && workuser.constructor.name === "TodoWorkUser") { 
+        console.log(workuser.constructor.name)
+        this.workUser = workuser;
+        return await this.save();
+    } else {
+      return null;
+    }
+  }
 }
 module.exports = TodoTask;

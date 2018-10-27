@@ -66,5 +66,9 @@ class TodoAppUser extends AppUser {
     }
     return null;
   }
+
+  async TodoWorkUser(){
+    return await TodoWorkUser.findById(this.workUser)
+  }
 }
 module.exports = TodoAppUser;

@@ -1,0 +1,27 @@
+
+
+CRUD = create read update delete
+
+check task  access list   plus owner workuser
+check process access list   plus owners, list  of [workuser]
+check project access list plus , plus owners, list of [workuser]
+check program  list, plus owner list of [workuser]
+
+access list {
+  create:  [workusers];
+  read: [workusers];
+  update: [workusers];
+  delete: [workusers]
+}
+
+group  access list {
+  create: bool
+  read: bool
+  update:  bool
+  delete: bool
+  list of [workuser]
+}
+
+task owner   : workuser
+process owners : list of workuser
+

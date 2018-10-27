@@ -14,10 +14,12 @@ const WorkTaskSchema = new Schema({
     type: String,
     default: OPStatus.not_started
   },
-  workProcess: {type : Schema.Types.ObjectId, ref: 'WorkProcesses' },
+  workProcess: {type : Schema.Types.ObjectId, ref: 'workprocesses' },
+  workUser: {type : Schema.Types.ObjectId, ref: 'workusers' },
 });
 
 WorkTaskSchema.index({description: 1, workProcess: 1}, {unique: true});
+WorkTaskSchema.index({todoWorkUser: 1});
 
 
 /*

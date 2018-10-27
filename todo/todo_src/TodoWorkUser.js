@@ -1,5 +1,4 @@
 const WorkUser = require('../models/WorkUser');
-const Person = require('../models/Person');
 const TodoPerson= require('./TodoPerson');
 
 // work_process is the single name for processes
@@ -17,7 +16,7 @@ class TodoWorkUser extends WorkUser {
   }
 
   static async findById(id) {
-    let workuser = await workUser.findById(id, function(err, person) {
+    let workuser = await WorkUser.findById(id, function(err, workuser) {
       return (workuser);
     });
     return await new TodoWorkUser(workuser);
@@ -34,6 +33,9 @@ class TodoWorkUser extends WorkUser {
     let person = await TodoPerson.findByLocalArgs({email: email});
     let workuser = await WorkUser.findOne({person: person})
     return await new TodoWorkUser(workuser);
+  }
+  async personIdentity() {
+    return await TodoPerson.findById(this.person)
   }
 }
 

@@ -145,11 +145,9 @@ describe('person',  () => {
     */
 
     // console.log(appuser1_obj_found_by_email.validatePassword('p1'));
-    token = await TodoAppUser.login(person3_args.email, 'p1');
+    //token = await TodoAppUser.login(person3_args.email, 'p1');
     //token = await TodoAppUser.login('a@b.com', 'p2');
-    console.log(token);
-
-    //expect(appuser1_obj).toEqual(appuser1_obj_found);
+    //console.log(token);
   });
 
 });
